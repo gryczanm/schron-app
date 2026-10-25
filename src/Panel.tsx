@@ -28,24 +28,24 @@ export function Panel({ zamknij, children }: { zamknij: () => void; children: Re
 }
 
 function PanelDolny({ zamknij, przyciskZamknij, children }: { zamknij: () => void; przyciskZamknij: ReactNode; children: ReactNode }) {
-  const [dy, setDy] = useState<number | null>(null);
-  const startY = useRef(0);
-  const down = (e: React.PointerEvent) => {
+  const [przesuniecie, setPrzesuniecie] = useState<number | null>(null);
+  const poczatekY = useRef(0);
+  const chwyc = (e: React.PointerEvent) => {
     e.currentTarget.setPointerCapture(e.pointerId);
-    startY.current = e.clientY;
-    setDy(0);
+    poczatekY.current = e.clientY;
+    setPrzesuniecie(0);
   };
-  const move = (e: React.PointerEvent) => dy != null && setDy(e.clientY - startY.current);
-  const up = () => {
-    if (dy != null && dy > PROG_ZAMKNIECIA) zamknij();
-    setDy(null);
+  const przeciagnij = (e: React.PointerEvent) => przesuniecie != null && setPrzesuniecie(e.clientY - poczatekY.current);
+  const pusc = () => {
+    if (przesuniecie != null && przesuniecie > PROG_ZAMKNIECIA) zamknij();
+    setPrzesuniecie(null);
   };
   return (
     <section
       className="panel panel-dolny"
-      style={{ transform: dy && dy > 0 ? `translateY(${dy}px)` : undefined, transition: dy == null ? undefined : 'none' }}
+      style={{ transform: przesuniecie && przesuniecie > 0 ? `translateY(${przesuniecie}px)` : undefined, transition: przesuniecie == null ? undefined : 'none' }}
     >
-      <div className="uchwyt" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
+      <div className="uchwyt" onPointerDown={chwyc} onPointerMove={przeciagnij} onPointerUp={pusc} onPointerCancel={pusc}>
         <div className="uchwyt-pasek" />
         {przyciskZamknij}
       </div>
@@ -57,10 +57,10 @@ function PanelDolny({ zamknij, przyciskZamknij, children }: { zamknij: () => voi
 function useWaski() {
   const [waski, setWaski] = useState(() => matchMedia(WASKI).matches);
   useEffect(() => {
-    const mq = matchMedia(WASKI);
-    const zmiana = () => setWaski(mq.matches);
-    mq.addEventListener('change', zmiana);
-    return () => mq.removeEventListener('change', zmiana);
+    const zapytanie = matchMedia(WASKI);
+    const zmiana = () => setWaski(zapytanie.matches);
+    zapytanie.addEventListener('change', zmiana);
+    return () => zapytanie.removeEventListener('change', zmiana);
   }, []);
   return waski;
 }

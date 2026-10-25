@@ -42,10 +42,16 @@ export function zbudujZbior(csv: string, stan: Date): ZwartyZbior {
   wiersze.forEach((w, i) => {
     const d = DOSTEPNOSC_Z_CSV.get(w[kol.d]);
     // Wiersz liczony jak w pliku: nagłówek to wiersz 1.
-    if (d === undefined) throw new Error(`Nieznana Dostępność „${w[kol.d]}” w wierszu ${i + 2} (${w[kol.id]})`);
+    const gdzie = `w wierszu ${i + 2} (${w[kol.id]})`;
+    if (d === undefined) throw new Error(`Nieznana Dostępność „${w[kol.d]}” ${gdzie}`);
+    const wspolrzedna = (wartosc = '') => {
+      const liczba = Number(wartosc);
+      if (wartosc.trim() === '' || !Number.isFinite(liczba)) throw new Error(`Zła współrzędna „${wartosc}” ${gdzie}`);
+      return zaokraglij(liczba);
+    };
     zbior.id.push(w[kol.id]);
-    zbior.lat.push(zaokraglij(w[kol.lat]));
-    zbior.lng.push(zaokraglij(w[kol.lng]));
+    zbior.lat.push(wspolrzedna(w[kol.lat]));
+    zbior.lng.push(wspolrzedna(w[kol.lng]));
     zbior.adres.push(w[kol.adres]);
     zbior.gmina.push(w[kol.gmina]);
     zbior.d.push(d);
@@ -91,7 +97,7 @@ function parsujCsv(tekst: string): string[][] {
 }
 
 // 6 miejsc po przecinku to ok. 10 cm: dokładniej, niż potrzeba, a plik jest wyraźnie mniejszy.
-const zaokraglij = (wartosc: string) => Number(Number(wartosc).toFixed(6));
+const zaokraglij = (liczba: number) => Number(liczba.toFixed(6));
 
 // Szwedzki zapis daty to RRRR-MM-DD.
 const dzienWPolsce = (chwila: Date) => chwila.toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });

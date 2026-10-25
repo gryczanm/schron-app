@@ -99,4 +99,13 @@ describe('zbiór punktów schronienia z CSV PSP', () => {
       ],
     });
   });
+
+  it('przerywa czytelnym błędem przy pustej albo nieliczbowej współrzędnej', () => {
+    expect(() => zbudujZbior(csv('OZO-1,,,,Gmina,,,,17,A,Na żądanie'), STAN)).toThrow(
+      'Zła współrzędna „” w wierszu 2 (OZO-1)',
+    );
+    expect(() => zbudujZbior(csv('OZO-1,,,,Gmina,,,50,17°,A,Na żądanie'), STAN)).toThrow(
+      'Zła współrzędna „17°” w wierszu 2 (OZO-1)',
+    );
+  });
 });

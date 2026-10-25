@@ -18,9 +18,9 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setInfo(false);
-    addEventListener('keydown', esc);
-    return () => removeEventListener('keydown', esc);
+    const zamknijEscape = (e: KeyboardEvent) => e.key === 'Escape' && setInfo(false);
+    addEventListener('keydown', zamknijEscape);
+    return () => removeEventListener('keydown', zamknijEscape);
   }, []);
 
   return (
@@ -34,14 +34,17 @@ export function App() {
       >
         i
       </button>
-      {info && zbior && (
+      {info && (
         <Panel zamknij={() => setInfo(false)}>
           <h1 className="tytul">{t.tytul}</h1>
-          <p className="stopka">
-            {zbior.stopka[0]}
-            <br />
-            {zbior.stopka[1]}
-          </p>
+          {/* Stopka czeka na dane, bo zawiera ich datę stanu. */}
+          {zbior && (
+            <p className="stopka">
+              {zbior.stopka[0]}
+              <br />
+              {zbior.stopka[1]}
+            </p>
+          )}
         </Panel>
       )}
     </div>

@@ -11,10 +11,10 @@ const CEL = fileURLToPath(new URL('../public/dane/punkty.json', import.meta.url)
 console.log('Pobieram', ZRODLO);
 const odp = await fetch(ZRODLO);
 if (!odp.ok) throw new Error(`PSP odpowiedziało HTTP ${odp.status}`);
-const lastModified = odp.headers.get('last-modified');
-if (!lastModified) throw new Error('Brak nagłówka Last-Modified, nie znam daty stanu danych');
+const ostatniaZmiana = odp.headers.get('last-modified');
+if (!ostatniaZmiana) throw new Error('Brak nagłówka Last-Modified, nie znam daty stanu danych');
 
-const zbior = zbudujZbior(await odp.text(), new Date(lastModified));
+const zbior = zbudujZbior(await odp.text(), new Date(ostatniaZmiana));
 mkdirSync(dirname(CEL), { recursive: true });
 writeFileSync(CEL, JSON.stringify(zbior));
 console.log(`Zapisano ${zbior.id.length} punktów schronienia, stan z ${zbior.stan} → ${CEL}`);
