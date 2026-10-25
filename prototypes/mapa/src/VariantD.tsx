@@ -8,11 +8,11 @@ export const nazwa = 'Panel boczny: legenda + szczegóły w panelu';
 export function VariantD({ dane }: { dane: Dane }) {
   const { ref, mapa } = useMapa(STYL_LIBERTY);
   const [wybrany, setWybrany] = useState<number | null>(null);
+  // Warstwy muszą powstać przed efektem filtra z useFiltr.
+  useEffect(() => { if (mapa) dodajWarstwy(mapa, dane, setWybrany); }, [mapa]);
   const { filtry, przelacz } = useFiltr(mapa, dane);
   const wWidoku = useWWidoku(mapa, dane);
   const zglos = useZglosStan();
-
-  useEffect(() => { if (mapa) dodajWarstwy(mapa, dane, setWybrany); }, [mapa]);
   useEffect(() => { zglos({ filtry: [...filtry].map((d) => DOSTEPNOSC[d].nazwa).join(', ') || '—', wybrany: wybrany != null ? dane.punkty[wybrany].id : '—', 'w widoku': wWidoku.join('/') }); }, [filtry, wybrany, wWidoku]);
 
   const p = wybrany != null ? dane.punkty[wybrany] : null;

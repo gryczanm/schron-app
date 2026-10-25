@@ -10,16 +10,16 @@ export function VariantE({ dane }: { dane: Dane }) {
   const { ref, mapa } = useMapa(STYL_LIBERTY);
   const [wybrany, setWybrany] = useState<number | null>(null);
   const [zwinieta, setZwinieta] = useState(false);
-  const { filtry, przelacz } = useFiltr(mapa, dane);
-  const wWidoku = useWWidoku(mapa, dane);
-  const zglos = useZglosStan();
   const popup = useRef(new maplibregl.Popup({ maxWidth: '280px', offset: 12 }));
-
+  // Warstwy muszą powstać przed efektem filtra z useFiltr.
   useEffect(() => {
     if (!mapa) return;
     dodajWarstwy(mapa, dane, setWybrany);
     popup.current.on('close', () => setWybrany(null));
   }, [mapa]);
+  const { filtry, przelacz } = useFiltr(mapa, dane);
+  const wWidoku = useWWidoku(mapa, dane);
+  const zglos = useZglosStan();
   useEffect(() => { zglos({ filtry: [...filtry].map((d) => DOSTEPNOSC[d].nazwa).join(', ') || '—', wybrany: wybrany != null ? dane.punkty[wybrany].id : '—', 'w widoku': wWidoku.join('/'), legenda: zwinieta ? 'zwinięta' : 'rozwinięta' }); }, [filtry, wybrany, wWidoku, zwinieta]);
 
   useEffect(() => {
