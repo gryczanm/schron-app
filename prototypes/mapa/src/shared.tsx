@@ -63,6 +63,7 @@ export function useMapa(styl = STYLE) {
     m.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
     m.addControl(new maplibregl.GeolocateControl({ trackUserLocation: true, positionOptions: { enableHighAccuracy: true } }), 'top-right');
     m.on('load', () => setMapa(m));
+    (window as any).__mapa = m; // PROTOTYP: dostęp do mapy dla skryptów testowych
     return () => m.remove();
   }, [styl]);
   return { ref, mapa };

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 type Props = { warianty: { klucz: string; nazwa: string }[]; aktualny: string; onZmiana: (k: string) => void; stan: Record<string, unknown> };
 
 export function PrototypeSwitcher({ warianty, aktualny, onZmiana, stan }: Props) {
-  const [zwiniety, setZwiniety] = useState(false);
+  // Na telefonie startuje zwinięty, żeby nie zasłaniać panelu dolnego.
+  const [zwiniety, setZwiniety] = useState(() => matchMedia('(max-width: 700px)').matches);
   const i = Math.max(0, warianty.findIndex((w) => w.klucz === aktualny));
   const idz = (krok: number) => onZmiana(warianty[(i + krok + warianty.length) % warianty.length].klucz);
 

@@ -6,7 +6,7 @@ import { VariantD } from './VariantD';
 
 export const WASKI = '(max-width: 700px)';
 
-function useWaski() {
+export function useWaski() {
   const [waski, setWaski] = useState(() => matchMedia(WASKI).matches);
   useEffect(() => {
     const mq = matchMedia(WASKI);
