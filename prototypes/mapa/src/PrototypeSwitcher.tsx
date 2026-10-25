@@ -1,9 +1,10 @@
 // PROTOTYP: pływający przełącznik wariantów. Ukryty w buildzie produkcyjnym.
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = { warianty: { klucz: string; nazwa: string }[]; aktualny: string; onZmiana: (k: string) => void; stan: Record<string, unknown> };
 
 export function PrototypeSwitcher({ warianty, aktualny, onZmiana, stan }: Props) {
+  const [zwiniety, setZwiniety] = useState(false);
   const i = Math.max(0, warianty.findIndex((w) => w.klucz === aktualny));
   const idz = (krok: number) => onZmiana(warianty[(i + krok + warianty.length) % warianty.length].klucz);
 
@@ -19,6 +20,13 @@ export function PrototypeSwitcher({ warianty, aktualny, onZmiana, stan }: Props)
   });
 
   if (!import.meta.env.DEV) return null;
+  // Zwinięty: mała kropka przy lewej krawędzi, żeby nie zasłaniać dolnych paneli na telefonie.
+  if (zwiniety) return (
+    <button onClick={() => setZwiniety(false)} style={{
+      position: 'fixed', left: 0, top: '45%', zIndex: 1000, background: '#facc15', border: '2px solid #000', borderLeft: 0, borderRadius: '0 10px 10px 0',
+      font: '700 12px ui-monospace, monospace', padding: '8px 6px', cursor: 'pointer',
+    }}>{warianty[i].klucz}</button>
+  );
   const btn: React.CSSProperties = { background: 'transparent', color: '#fff', border: 0, fontSize: 18, padding: '0 10px', cursor: 'pointer' };
   return (
     <div style={{
@@ -29,6 +37,7 @@ export function PrototypeSwitcher({ warianty, aktualny, onZmiana, stan }: Props)
         <button style={btn} onClick={() => idz(-1)}>‹</button>
         <span style={{ flex: 1, textAlign: 'center', fontWeight: 700, whiteSpace: 'nowrap' }}>{warianty[i].klucz} ({warianty[i].nazwa})</span>
         <button style={btn} onClick={() => idz(1)}>›</button>
+        <button style={{ ...btn, fontSize: 14, color: '#facc15' }} onClick={() => setZwiniety(true)} title="Zwiń">–</button>
       </div>
       <div style={{ padding: '4px 6px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
         {Object.entries(stan).map(([k, v]) => `${k}: ${v}`).join(' · ')}

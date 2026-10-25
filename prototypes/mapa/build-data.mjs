@@ -61,5 +61,6 @@ const lastModified = existsSync(join(cacheDir, 'last-modified.txt'))
   ? readFileSync(join(cacheDir, 'last-modified.txt'), 'utf8') : '';
 out.stan = lastModified ? new Date(lastModified).toISOString().slice(0, 10) : null;
 
+mkdirSync(dirname(outPath), { recursive: true });
 writeFileSync(outPath, JSON.stringify(out));
 console.log(`Zapisano ${out.id.length} punktów → ${outPath}`);

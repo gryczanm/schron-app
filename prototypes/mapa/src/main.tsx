@@ -1,14 +1,24 @@
-// PROTOTYP runda 2: dwa warianty układu mapy punktów schronienia, przełączane przez ?variant=D|E.
-// Runda 1 (A, B, C) jest w commicie 08905d3.
+// PROTOTYP runda 3 (#8): układ D na telefonie. Bazowy D (panel nad mapą) i cztery warianty mobilne, przełączane przez ?variant=D|F|G|H|I.
+// Na szerokim ekranie F–I renderują D bez zmian; oceniać na telefonie albo w trybie urządzenia w DevTools.
+// Runda 1 (A, B, C) jest w commicie 08905d3, runda 2 (D, E) w f3ecaef.
 import { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { StanCtx, useDane } from './shared';
 import { PrototypeSwitcher } from './PrototypeSwitcher';
 import * as D from './VariantD';
-import * as E from './VariantE';
+import * as F from './VariantF';
+import * as G from './VariantG';
+import * as H from './VariantH';
+import * as I from './VariantI';
 
-const WARIANTY = { D: { nazwa: D.nazwa, C: D.VariantD }, E: { nazwa: E.nazwa, C: E.VariantE } };
+const WARIANTY = {
+  D: { nazwa: 'Bazowy D: panel nad mapą', C: D.VariantD },
+  F: { nazwa: F.nazwa, C: F.VariantF },
+  G: { nazwa: G.nazwa, C: G.VariantG },
+  H: { nazwa: H.nazwa, C: H.VariantH },
+  I: { nazwa: I.nazwa, C: I.VariantI },
+};
 type Klucz = keyof typeof WARIANTY;
 
 function App() {
