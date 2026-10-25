@@ -1,20 +1,20 @@
-// PROTOTYP: trzy warianty mapy punktów schronienia, przełączane przez ?variant=A|B|C.
+// PROTOTYP runda 2: dwa warianty układu mapy punktów schronienia, przełączane przez ?variant=D|E.
+// Runda 1 (A, B, C) jest w commicie 08905d3.
 import { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { StanCtx, useDane } from './shared';
 import { PrototypeSwitcher } from './PrototypeSwitcher';
-import * as A from './VariantA';
-import * as B from './VariantB';
-import * as C from './VariantC';
+import * as D from './VariantD';
+import * as E from './VariantE';
 
-const WARIANTY = { A: { nazwa: A.nazwa, C: A.VariantA }, B: { nazwa: B.nazwa, C: B.VariantB }, C: { nazwa: C.nazwa, C: C.VariantC } };
+const WARIANTY = { D: { nazwa: D.nazwa, C: D.VariantD }, E: { nazwa: E.nazwa, C: E.VariantE } };
 type Klucz = keyof typeof WARIANTY;
 
 function App() {
   const dane = useDane();
   const [wariant, setWariant] = useState<Klucz>(() => (new URLSearchParams(location.search).get('variant') as Klucz) in WARIANTY
-    ? new URLSearchParams(location.search).get('variant') as Klucz : 'A');
+    ? new URLSearchParams(location.search).get('variant') as Klucz : 'D');
   const [stan, setStan] = useState<Record<string, unknown>>({});
   const zglos = useCallback((s: Record<string, unknown>) => setStan(s), []);
 
