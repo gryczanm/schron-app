@@ -48,7 +48,9 @@ export function useMapa(styl = STYLE) {
       container: ref.current!, style: styl, center: [19.4, 52.1], zoom: 5.6,
       attributionControl: false,
     });
-    m.addControl(new maplibregl.AttributionControl({ compact: true }), 'top-right');
+    // Zwinięta atrybucja w MapLibre startuje rozwinięta; chowamy ją od razu (rozwija się po dotknięciu „i”).
+    m.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+    m.getContainer().querySelector('.maplibregl-ctrl-attrib')?.classList.remove('maplibregl-compact-show');
     m.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
     m.addControl(new maplibregl.GeolocateControl({ trackUserLocation: true, positionOptions: { enableHighAccuracy: true } }), 'top-right');
     m.on('load', () => setMapa(m));
