@@ -48,9 +48,18 @@ export function useMapa(styl = STYLE) {
       container: ref.current!, style: styl, center: [19.4, 52.1], zoom: 5.6,
       attributionControl: false,
     });
-    // Zwinięta atrybucja w MapLibre startuje rozwinięta; chowamy ją od razu (rozwija się po dotknięciu „i”).
+    // Zwinięta atrybucja w MapLibre rozwija się sama, gdy styl dostarczy pierwsze atrybucje (nie przy dodaniu kontrolki).
+    // Zwijamy ją raz, zaraz po tym; potem rozwija się tylko po dotknięciu „i”.
     m.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
-    m.getContainer().querySelector('.maplibregl-ctrl-attrib')?.classList.remove('maplibregl-compact-show');
+    const zwin = () => {
+      const el = m.getContainer().querySelector('.maplibregl-ctrl-attrib.maplibregl-compact');
+      if (!el) return;
+      el.classList.remove('maplibregl-compact-show');
+      m.off('styledata', zwin);
+      m.off('sourcedata', zwin);
+    };
+    m.on('styledata', zwin);
+    m.on('sourcedata', zwin);
     m.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
     m.addControl(new maplibregl.GeolocateControl({ trackUserLocation: true, positionOptions: { enableHighAccuracy: true } }), 'top-right');
     m.on('load', () => setMapa(m));
