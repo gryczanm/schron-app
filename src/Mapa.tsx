@@ -3,11 +3,12 @@ import Map, {
   AttributionControl, GeolocateControl, Layer, NavigationControl, Source,
   useMap, type MapLayerMouseEvent, type MapRef,
 } from 'react-map-gl/maplibre';
-import type { ExpressionSpecification, GeoJSONSource } from 'maplibre-gl';
+import type { ExpressionSpecification, GeoJSONSource, StyleSpecification } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import { KOLOR_DOSTEPNOSCI, type Prostokat, type Punkt } from './dane/zbior.ts';
+import { przekierujGlify, wczytajStyl } from './podklad.ts';
 
-const STYL = 'https://tiles.openfreemap.org/styles/liberty';
+const PRZEKIERUJ_GLIFY = przekierujGlify(import.meta.env.BASE_URL);
 const SRODEK_POLSKI = { longitude: 19.4, latitude: 52.1, zoom: 5.6 };
 
 // Kolor klastra mówi, jaka część jego punktów schronienia jest Całodobowa (c0 / point_count).
@@ -30,6 +31,9 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
   const mapa = useRef<MapRef>(null);
   const zwinieta = useRef(false);
   const [nadObiektem, setNadObiektem] = useState(false);
+  const [styl, setStyl] = useState<StyleSpecification | null>(null);
+
+  useEffect(() => void wczytajStyl().then(setStyl), []);
 
   // Wybrany punkt ląduje na środku części mapy, której panel nie zasłania. Przybliżenie zostaje.
   // offset, nie padding: padding zostaje w mapie i przesuwałby późniejsze przybliżenia klastrów.
@@ -69,10 +73,14 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
     }
   };
 
+  // Mapa powstaje dopiero ze stylem: wczytajStyl offline daje styl zapasowy, więc punkty i tak się narysują.
+  if (!styl) return null;
+
   return (
     <Map
       ref={mapa}
-      mapStyle={STYL}
+      mapStyle={styl}
+      transformRequest={PRZEKIERUJ_GLIFY}
       initialViewState={SRODEK_POLSKI}
       attributionControl={false}
       onStyleData={zwinAtrybucje}
