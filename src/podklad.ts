@@ -1,6 +1,6 @@
 // Podkład mapy z OpenFreeMap. Offline działa w miarę możliwości (cache runtime service workera),
 // a jego brak nie może zablokować warstw punktów schronienia.
-import type { StyleSpecification } from 'maplibre-gl';
+import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
 const STYL = 'https://tiles.openfreemap.org/styles/liberty';
 const GLIFY = 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf';
@@ -14,13 +14,27 @@ const STYL_ZAPASOWY: StyleSpecification = {
   layers: [{ id: 'tlo', type: 'background', paint: { 'background-color': '#f8f4f0' } }],
 };
 
+// Liberty podpisuje państwa, regiony i miejscowości po angielsku (name_en). Etykiety z nazwą
+// dostają polską, a bez niej nazwę domyślną. Numery dróg (ref) zostają.
+// Warstwy rozpoznajemy po name_en, a nie po id, więc po polsku są też rzeki, ulice i POI.
+const NAZWA_PO_POLSKU: ExpressionSpecification = ['coalesce', ['get', 'name:pl'], ['get', 'name']];
+
+function poPolsku(styl: StyleSpecification): StyleSpecification {
+  const layers = styl.layers.map((w) =>
+    w.type === 'symbol' && JSON.stringify(w.layout?.['text-field'] ?? '').includes('"name_en"')
+      ? { ...w, layout: { ...w.layout, 'text-field': NAZWA_PO_POLSKU } }
+      : w,
+  );
+  return { ...styl, layers };
+}
+
 // Bez sieci i bez stylu w cache daje styl zapasowy, zamiast zostawić mapę bez stylu.
 // Limit czasu, bo mapa czeka na styl, a przy słabej sieci podczas alarmu fetch potrafi wisieć.
 export async function wczytajStyl(pobierz: typeof fetch = fetch, limitMs = 4000): Promise<StyleSpecification> {
   const pobierzStyl = async () => {
     const odp = await pobierz(STYL);
     if (!odp.ok) return STYL_ZAPASOWY;
-    return (await odp.json()) as StyleSpecification;
+    return poPolsku((await odp.json()) as StyleSpecification);
   };
   const poLimicie = new Promise<StyleSpecification>((ok) => setTimeout(() => ok(STYL_ZAPASOWY), limitMs));
   return Promise.race([pobierzStyl(), poLimicie]).catch(() => STYL_ZAPASOWY);
