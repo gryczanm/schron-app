@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      // 'prompt' bez komunikatu: nowy service worker czeka i przejmuje aplikację przy kolejnym otwarciu (ADR-0002).
+      // 'prompt' bez komunikatu: nowy service worker czeka i przejmuje aplikację przy kolejnym otwarciu (#6).
       registerType: 'prompt',
       manifest: {
         name: 'Punkty schronienia',
@@ -42,7 +42,7 @@ export default defineConfig({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'podklad-styl',
-              networkTimeoutSeconds: 3,
+              networkTimeoutSeconds: 2, // krócej niż limit w wczytajStyl, żeby styl z cache zdążył
               cacheableResponse: { statuses: [200] },
             },
           },

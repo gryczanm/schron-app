@@ -14,6 +14,11 @@ describe('styl podkładu', () => {
     expect(styl).toMatchObject({ sources: {} });
   });
 
+  it('gdy sieć wisi, po limicie czasu daje zapasowy styl', async () => {
+    const styl = await wczytajStyl(() => new Promise(() => {}), 10);
+    expect(styl).toMatchObject({ sources: {} });
+  });
+
   it('z siecią daje styl OpenFreeMap', async () => {
     const liberty = { version: 8, sources: { openmaptiles: { type: 'vector', url: 'https://tiles.openfreemap.org/planet' } }, layers: [] };
     const styl = await wczytajStyl(async () => Response.json(liberty));
