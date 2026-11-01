@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { odczytajZbior, zbudujZbior } from './zbior.ts';
+import { odczytajZbior, szczegolyPunktu, zbudujZbior } from './zbior.ts';
 
 const NAGLOWEK =
   'Identyfikator publiczny,Nazwa,Rodzaj obiektu,Opis ogolny,Gmina,Powiat,Wojewodztwo,Szerokosc geograficzna,Dlugosc geograficzna,Adres,Dostepnosc';
@@ -106,6 +106,30 @@ describe('zbiór punktów schronienia z CSV PSP', () => {
     );
     expect(() => zbudujZbior(csv('OZO-1,,,,Gmina,,,50,17°,A,Na żądanie'), STAN)).toThrow(
       'Zła współrzędna „17°” w wierszu 2 (OZO-1)',
+    );
+  });
+});
+
+describe('szczegóły punktu schronienia', () => {
+  const punkt = { id: 'OZO-1', lat: 50.4, lng: 17.1, adres: 'Rynek 1', gmina: 'Otmuchów', d: 2 } as const;
+
+  it('podaje adres, gminę oraz nazwę i opis Dostępności', () => {
+    expect(szczegolyPunktu(punkt)).toMatchObject({
+      adres: 'Rynek 1',
+      gmina: 'Otmuchów',
+      dostepnosc: 'Na żądanie',
+      opis: 'Zwykle zamknięty. Zarządca powinien udostępnić go po ogłoszeniu alarmu, w miarę możliwości – dostęp niegwarantowany.',
+    });
+  });
+
+  it('opisuje każdą Dostępność', () => {
+    expect(szczegolyPunktu({ ...punkt, d: 0 }).opis).toBe('Dostępny całą dobę (wg PSP).');
+    expect(szczegolyPunktu({ ...punkt, d: 1 }).opis).toBe('Dostępny w godzinach pracy obiektu. Godzin nie podano.');
+  });
+
+  it('prowadzi pieszo do punktu w Google Maps', () => {
+    expect(szczegolyPunktu(punkt).prowadz).toBe(
+      'https://www.google.com/maps/dir/?api=1&destination=50.4,17.1&travelmode=walking',
     );
   });
 });

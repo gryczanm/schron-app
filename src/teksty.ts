@@ -6,6 +6,12 @@ const pl = {
     1: 'Określone godziny',
     2: 'Na żądanie',
   },
+  opisDostepnosci: {
+    0: 'Dostępny całą dobę (wg PSP).',
+    1: 'Dostępny w godzinach pracy obiektu. Godzin nie podano.',
+    2: 'Zwykle zamknięty. Zarządca powinien udostępnić go po ogłoszeniu alarmu, w miarę możliwości – dostęp niegwarantowany.',
+  },
+  gmina: (nazwa: string) => `Gmina: ${nazwa}`,
   stopka: {
     dane: (stan: string) => `Dane: KG PSP, CC BY 4.0 · stan z ${stan}`,
     zastrzezenie: 'Punkt schronienia nie jest schronem i nie gwarantuje ochrony.',
@@ -13,6 +19,7 @@ const pl = {
   przyciski: {
     informacje: 'Informacje',
     zamknij: 'Zamknij',
+    prowadz: 'Prowadź',
   },
 };
 

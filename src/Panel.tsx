@@ -1,11 +1,19 @@
 // Panel jak w Google Maps: do 700 px dolny z uchwytem, od 700 px boczny po lewej na całą wysokość.
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { t } from './teksty.ts';
 
 const WASKI = '(max-width: 700px)';
-const PROG_ZAMKNIECIA = 40; // px przeciągnięcia w dół, po których panel dolny się zamyka
+const PROG_PRZECIAGNIECIA = 40; // px przeciągnięcia, po których panel dolny zmienia wysokość albo się zamyka
+const PROG_DOTKNIECIA = 5; // px ruchu, do których przeciągnięcie liczy się jako dotknięcie uchwytu
 
-export function Panel({ zamknij, children }: { zamknij: () => void; children: ReactNode }) {
+type Wlasciwosci = {
+  zamknij: () => void;
+  children: ReactNode; // podgląd: zawsze widoczny
+  rozwiniecie?: ReactNode; // na telefonie dopiero po rozwinięciu, na komputerze od razu
+  elRef?: RefObject<HTMLElement>; // mapa sprawdza po nim, którą część ekranu panel zasłania
+};
+
+export function Panel({ zamknij, children, rozwiniecie, elRef }: Wlasciwosci) {
   const waski = useWaski();
   const przyciskZamknij = (
     <button className="zamknij" aria-label={t.przyciski.zamknij} onClick={zamknij} onPointerDown={(e) => e.stopPropagation()}>
@@ -14,20 +22,22 @@ export function Panel({ zamknij, children }: { zamknij: () => void; children: Re
   );
   if (!waski) {
     return (
-      <aside className="panel panel-boczny">
+      <aside className="panel panel-boczny" ref={elRef}>
         {przyciskZamknij}
         {children}
+        {rozwiniecie}
       </aside>
     );
   }
   return (
-    <PanelDolny zamknij={zamknij} przyciskZamknij={przyciskZamknij}>
+    <PanelDolny zamknij={zamknij} przyciskZamknij={przyciskZamknij} rozwiniecie={rozwiniecie} elRef={elRef}>
       {children}
     </PanelDolny>
   );
 }
 
-function PanelDolny({ zamknij, przyciskZamknij, children }: { zamknij: () => void; przyciskZamknij: ReactNode; children: ReactNode }) {
+function PanelDolny({ zamknij, przyciskZamknij, children, rozwiniecie, elRef }: Wlasciwosci & { przyciskZamknij: ReactNode }) {
+  const [rozwiniety, setRozwiniety] = useState(false);
   const [przesuniecie, setPrzesuniecie] = useState<number | null>(null);
   const poczatekY = useRef(0);
   const chwyc = (e: React.PointerEvent) => {
@@ -37,19 +47,34 @@ function PanelDolny({ zamknij, przyciskZamknij, children }: { zamknij: () => voi
   };
   const przeciagnij = (e: React.PointerEvent) => przesuniecie != null && setPrzesuniecie(e.clientY - poczatekY.current);
   const pusc = () => {
-    if (przesuniecie != null && przesuniecie > PROG_ZAMKNIECIA) zamknij();
+    const dy = przesuniecie ?? 0;
     setPrzesuniecie(null);
+    if (Math.abs(dy) <= PROG_DOTKNIECIA) setRozwiniety((r) => !r);
+    else if (dy < -PROG_PRZECIAGNIECIA) setRozwiniety(true);
+    else if (dy > PROG_PRZECIAGNIECIA) rozwiniety ? setRozwiniety(false) : zamknij();
   };
   return (
     <section
       className="panel panel-dolny"
+      ref={elRef}
       style={{ transform: przesuniecie && przesuniecie > 0 ? `translateY(${przesuniecie}px)` : undefined, transition: przesuniecie == null ? undefined : 'none' }}
     >
-      <div className="uchwyt" onPointerDown={chwyc} onPointerMove={przeciagnij} onPointerUp={pusc} onPointerCancel={pusc}>
+      <div
+        className="uchwyt"
+        role="button"
+        aria-expanded={rozwiniety}
+        onPointerDown={chwyc}
+        onPointerMove={przeciagnij}
+        onPointerUp={pusc}
+        onPointerCancel={() => setPrzesuniecie(null)}
+      >
         <div className="uchwyt-pasek" />
         {przyciskZamknij}
       </div>
-      <div className="tresc">{children}</div>
+      <div className="tresc">
+        {children}
+        {rozwiniety && rozwiniecie}
+      </div>
     </section>
   );
 }

@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import Map, {
   AttributionControl, GeolocateControl, Layer, NavigationControl, Source,
   type MapLayerMouseEvent, type MapRef,
 } from 'react-map-gl/maplibre';
 import type { ExpressionSpecification, GeoJSONSource } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
-import { KOLOR_DOSTEPNOSCI } from './dane/zbior.ts';
+import { KOLOR_DOSTEPNOSCI, type Punkt } from './dane/zbior.ts';
 
 const STYL = 'https://tiles.openfreemap.org/styles/liberty';
 const SRODEK_POLSKI = { longitude: 19.4, latitude: 52.1, zoom: 5.6 };
@@ -14,11 +14,34 @@ const SRODEK_POLSKI = { longitude: 19.4, latitude: 52.1, zoom: 5.6 };
 const UDZIAL_CALODOBOWYCH: ExpressionSpecification = ['/', ['get', 'c0'], ['get', 'point_count']];
 const MORSKI = '#0d9488';
 const JEST_KLASTREM: ExpressionSpecification = ['has', 'point_count'];
+const KOLOR_PUNKTU: ExpressionSpecification = ['match', ['get', 'd'], 0, KOLOR_DOSTEPNOSCI[0], 1, KOLOR_DOSTEPNOSCI[1], KOLOR_DOSTEPNOSCI[2]];
+const CIEMNY = '#0f172a';
 
-export function Mapa({ geojson, onKlikMapy }: { geojson?: FeatureCollection<Point>; onKlikMapy: () => void }) {
+type Wlasciwosci = {
+  geojson?: FeatureCollection<Point>;
+  wybrany: Punkt | null;
+  onWybierz: (i: number) => void; // i to indeks punktu schronienia w zbiorze
+  onKlikMapy: () => void;
+  panel: RefObject<HTMLElement>; // część ekranu zasłonięta przez panel
+};
+
+export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, panel }: Wlasciwosci) {
   const mapa = useRef<MapRef>(null);
   const zwinieta = useRef(false);
-  const [nadKlastrem, setNadKlastrem] = useState(false);
+  const [nadObiektem, setNadObiektem] = useState(false);
+
+  // Wybrany punkt ląduje na środku części mapy, której panel nie zasłania. Przybliżenie zostaje.
+  // offset, nie padding: padding zostaje w mapie i przesuwałby późniejsze przybliżenia klastrów.
+  useEffect(() => {
+    const m = mapa.current;
+    if (!m || !wybrany) return;
+    const ramka = panel.current?.getBoundingClientRect();
+    const mapaRamka = m.getContainer().getBoundingClientRect();
+    let offset: [number, number] = [0, 0];
+    if (ramka && ramka.top <= mapaRamka.top) offset = [(ramka.right - mapaRamka.left) / 2, 0]; // panel boczny
+    else if (ramka) offset = [0, -(mapaRamka.bottom - ramka.top) / 2]; // panel dolny
+    m.easeTo({ center: [wybrany.lng, wybrany.lat], offset });
+  }, [wybrany, panel]);
 
   // Zwinięta atrybucja MapLibre 4.7 rozwija się sama, gdy styl dostarczy pierwsze atrybucje.
   // Zwijamy ją raz, gdy kontrolka dostanie klasę maplibregl-compact; potem rozwija się tylko po dotknięciu ⓘ.
@@ -33,8 +56,10 @@ export function Mapa({ geojson, onKlikMapy }: { geojson?: FeatureCollection<Poin
   const klik = async (e: MapLayerMouseEvent) => {
     const m = mapa.current;
     // e.features pochodzi z ostatniego ruchu myszy, a po przybliżeniu klaster pod kursorem już nie istnieje.
-    const [klaster] = m?.getLayer('klaster') ? m.queryRenderedFeatures(e.point, { layers: ['klaster'] }) : [];
-    if (!m || !klaster) return onKlikMapy();
+    const [obiekt] = m?.getLayer('klaster') ? m.queryRenderedFeatures(e.point, { layers: ['klaster', 'punkt'] }) : [];
+    if (!m || !obiekt) return onKlikMapy();
+    if (obiekt.layer.id === 'punkt') return onWybierz(obiekt.properties.i);
+    const klaster = obiekt;
     try {
       const zoom = await (m.getSource('punkty') as GeoJSONSource).getClusterExpansionZoom(klaster.properties.cluster_id);
       m.easeTo({ center: (klaster.geometry as Point).coordinates as [number, number], zoom });
@@ -52,10 +77,10 @@ export function Mapa({ geojson, onKlikMapy }: { geojson?: FeatureCollection<Poin
       onStyleData={zwinAtrybucje}
       onSourceData={zwinAtrybucje}
       onClick={klik}
-      interactiveLayerIds={geojson ? ['klaster'] : []}
-      onMouseEnter={() => setNadKlastrem(true)}
-      onMouseLeave={() => setNadKlastrem(false)}
-      cursor={nadKlastrem ? 'pointer' : ''}
+      interactiveLayerIds={geojson ? ['klaster', 'punkt'] : []}
+      onMouseEnter={() => setNadObiektem(true)}
+      onMouseLeave={() => setNadObiektem(false)}
+      cursor={nadObiektem ? 'pointer' : ''}
       style={{ position: 'absolute', inset: 0 }}
     >
       <NavigationControl position="top-right" />
@@ -99,10 +124,25 @@ export function Mapa({ geojson, onKlikMapy }: { geojson?: FeatureCollection<Poin
             type="circle"
             filter={['!', JEST_KLASTREM]}
             paint={{
-              'circle-color': ['match', ['get', 'd'], 0, KOLOR_DOSTEPNOSCI[0], 1, KOLOR_DOSTEPNOSCI[1], KOLOR_DOSTEPNOSCI[2]],
+              'circle-color': KOLOR_PUNKTU,
               'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5, 17, 10],
               'circle-stroke-color': '#fff',
               'circle-stroke-width': 2,
+            }}
+          />
+        </Source>
+      )}
+      {/* Osobne źródło bez klastrów: wybrany punkt leży nad klastrami i jest widoczny też po oddaleniu. */}
+      {wybrany && (
+        <Source id="wybrany" type="geojson" data={{ type: 'Point', coordinates: [wybrany.lng, wybrany.lat] }}>
+          <Layer
+            id="wybrany"
+            type="circle"
+            paint={{
+              'circle-color': KOLOR_DOSTEPNOSCI[wybrany.d],
+              'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 9, 17, 14],
+              'circle-stroke-color': CIEMNY,
+              'circle-stroke-width': 4,
             }}
           />
         </Source>
