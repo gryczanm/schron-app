@@ -1,0 +1,112 @@
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font: 14px/1.4 system-ui, sans-serif;
+  color: #0f172a;
+}
+
+.aplikacja {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Kontrolki MapLibre mają z-index 2, panel leży nad nimi, a „i” nad panelem. */
+.przycisk-info {
+  position: absolute;
+  z-index: 4;
+  top: calc(8px + env(safe-area-inset-top));
+  left: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 99px;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+}
+.przycisk-info.aktywny {
+  border: 2px solid #0f172a;
+}
+
+.panel {
+  position: absolute;
+  z-index: 3;
+  background: #fff;
+  box-sizing: border-box;
+}
+.panel-boczny {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 400px;
+  padding: 60px 20px 20px;
+  overflow: auto;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.18);
+}
+.panel-boczny .zamknij {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+}
+.panel-dolny {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 85%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+.uchwyt {
+  position: relative;
+  padding: 10px 0 6px;
+  touch-action: none;
+  cursor: grab;
+}
+.uchwyt-pasek {
+  width: 40px;
+  height: 5px;
+  border-radius: 9px;
+  background: #cbd5e1;
+  margin: 0 auto;
+}
+.panel-dolny .zamknij {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+}
+.panel-dolny .tresc {
+  overflow: auto;
+  padding: 0 16px calc(16px + env(safe-area-inset-bottom));
+}
+
+.zamknij {
+  width: 32px;
+  height: 32px;
+  border-radius: 99px;
+  border: 0;
+  background: #f1f5f9;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.tytul {
+  margin: 0 0 8px;
+  padding-right: 36px;
+  font-size: 18px;
+  font-weight: 800;
+}
+.stopka {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #475569;
+}
