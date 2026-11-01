@@ -16,6 +16,7 @@ const STYL_ZAPASOWY: StyleSpecification = {
 
 // Liberty podpisuje państwa, regiony i miejscowości po angielsku (name_en). Etykiety z nazwą
 // dostają polską, a bez niej nazwę domyślną. Numery dróg (ref) zostają.
+// Warstwy rozpoznajemy po name_en, a nie po id, więc po polsku są też rzeki, ulice i POI.
 const NAZWA_PO_POLSKU: ExpressionSpecification = ['coalesce', ['get', 'name:pl'], ['get', 'name']];
 
 function poPolsku(styl: StyleSpecification): StyleSpecification {
