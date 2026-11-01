@@ -26,6 +26,32 @@ describe('styl podkładu', () => {
   });
 });
 
+describe('etykiety podkładu', () => {
+  const NAZWA_LIBERTY = [
+    'case', ['has', 'name:nonlatin'],
+    ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+    ['coalesce', ['get', 'name_en'], ['get', 'name']],
+  ];
+  const liberty = {
+    version: 8,
+    sources: {},
+    layers: [
+      { id: 'label_country_1', type: 'symbol', source: 'openmaptiles', layout: { 'text-field': NAZWA_LIBERTY, 'text-size': 14 } },
+      { id: 'highway-shield-non-us', type: 'symbol', source: 'openmaptiles', layout: { 'text-field': ['to-string', ['get', 'ref']] } },
+    ],
+  };
+
+  it('pokazują polską nazwę, a gdy jej nie ma, nazwę domyślną', async () => {
+    const styl = await wczytajStyl(async () => Response.json(liberty));
+    expect(styl.layers[0]).toMatchObject({ layout: { 'text-field': ['coalesce', ['get', 'name:pl'], ['get', 'name']], 'text-size': 14 } });
+  });
+
+  it('numerów dróg nie zmieniają', async () => {
+    const styl = await wczytajStyl(async () => Response.json(liberty));
+    expect(styl.layers[1]).toEqual(liberty.layers[1]);
+  });
+});
+
 describe('glify cyfr klastrów', () => {
   it('Noto Sans Bold 0-255 bierze z pliku aplikacji', () => {
     expect(przekierujGlify(BAZA)('https://tiles.openfreemap.org/fonts/Noto Sans Bold/0-255.pbf', 'Glyphs')).toEqual({
