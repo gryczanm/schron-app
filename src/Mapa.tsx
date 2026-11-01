@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import Map, {
   AttributionControl, GeolocateControl, Layer, NavigationControl, Source,
-  type MapLayerMouseEvent, type MapRef,
+  useMap, type MapLayerMouseEvent, type MapRef,
 } from 'react-map-gl/maplibre';
 import type { ExpressionSpecification, GeoJSONSource } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
-import { KOLOR_DOSTEPNOSCI, type Punkt } from './dane/zbior.ts';
+import { KOLOR_DOSTEPNOSCI, type Prostokat, type Punkt } from './dane/zbior.ts';
 
 const STYL = 'https://tiles.openfreemap.org/styles/liberty';
 const SRODEK_POLSKI = { longitude: 19.4, latitude: 52.1, zoom: 5.6 };
@@ -22,10 +22,11 @@ type Wlasciwosci = {
   wybrany: Punkt | null;
   onWybierz: (i: number) => void; // i to indeks punktu schronienia w zbiorze
   onKlikMapy: () => void;
+  onWidok: (widok: Prostokat) => void; // od razu po utworzeniu mapy i po każdym zakończonym ruchu
   panel: RefObject<HTMLElement>; // część ekranu zasłonięta przez panel
 };
 
-export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, panel }: Wlasciwosci) {
+export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }: Wlasciwosci) {
   const mapa = useRef<MapRef>(null);
   const zwinieta = useRef(false);
   const [nadObiektem, setNadObiektem] = useState(false);
@@ -87,6 +88,7 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, panel }: Wlasciw
       {/* Lokalizacja zostaje w przeglądarce: GeolocateControl tylko centruje mapę. */}
       <GeolocateControl position="top-right" trackUserLocation positionOptions={{ enableHighAccuracy: true }} />
       <AttributionControl position="bottom-right" compact />
+      <ZglosWidok onWidok={onWidok} />
       {geojson && (
         <Source
           id="punkty"
@@ -149,4 +151,22 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, panel }: Wlasciw
       )}
     </Map>
   );
+}
+
+// Zgłasza prostokąt widoku od razu i po każdym zakończonym ruchu mapy. Nie czeka na load,
+// bo ten czeka na kafelki podkładu, a liczniki potrzebują tylko prostokąta.
+// Osobny komponent, bo dzieci <Map> powstają dopiero, gdy mapa już istnieje.
+function ZglosWidok({ onWidok }: { onWidok: (widok: Prostokat) => void }) {
+  const { current: m } = useMap();
+  useEffect(() => {
+    if (!m) return;
+    const zglos = () => {
+      const b = m.getBounds();
+      onWidok({ zachod: b.getWest(), poludnie: b.getSouth(), wschod: b.getEast(), polnoc: b.getNorth() });
+    };
+    zglos();
+    m.on('moveend', zglos);
+    return () => void m.off('moveend', zglos);
+  }, [m, onWidok]);
+  return null;
 }

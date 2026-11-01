@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { odczytajZbior, szczegolyPunktu, zbudujZbior } from './zbior.ts';
+import { odczytajZbior, policzWWidoku, przefiltruj, szczegolyPunktu, zbudujZbior, type Dostepnosc } from './zbior.ts';
 
 const NAGLOWEK =
   'Identyfikator publiczny,Nazwa,Rodzaj obiektu,Opis ogolny,Gmina,Powiat,Wojewodztwo,Szerokosc geograficzna,Dlugosc geograficzna,Adres,Dostepnosc';
@@ -131,5 +131,50 @@ describe('szczegóły punktu schronienia', () => {
     expect(szczegolyPunktu(punkt).prowadz).toBe(
       'https://www.google.com/maps/dir/?api=1&destination=50.4,17.1&travelmode=walking',
     );
+  });
+});
+
+describe('filtr Dostępności', () => {
+  const { geojson } = odczytajZbior(
+    zbudujZbior(
+      csv(
+        'OZO-1,,,,Gmina,,,50,17,A,Na żądanie',
+        'OZO-2,,,,Gmina,,,50,17,B,Całodobowa',
+        'OZO-3,,,,Gmina,,,50,17,C,Określone godziny',
+        'OZO-4,,,,Gmina,,,50,17,D,Całodobowa',
+      ),
+      STAN,
+    ),
+  );
+  const indeksy = (wlaczone: Dostepnosc[]) => przefiltruj(geojson, new Set(wlaczone)).features.map((f) => f.properties.i);
+
+  it('zostawia punkty włączonych Dostępności z ich indeksem w zbiorze', () => {
+    expect(indeksy([0, 1, 2])).toEqual([0, 1, 2, 3]);
+    expect(indeksy([0])).toEqual([1, 3]);
+    expect(indeksy([1, 2])).toEqual([0, 2]);
+  });
+
+  it('bez włączonych Dostępności daje pustą kolekcję', () => {
+    expect(przefiltruj(geojson, new Set())).toEqual({ type: 'FeatureCollection', features: [] });
+  });
+});
+
+describe('liczniki punktów schronienia w widoku', () => {
+  const punkt = (lat: number, lng: number, d: Dostepnosc) => ({ id: 'OZO', lat, lng, adres: '', gmina: '', d });
+  const widok = { zachod: 17, poludnie: 50, wschod: 18, polnoc: 51 };
+
+  it('liczy osobno każdą Dostępność w prostokącie widoku', () => {
+    const punkty = [punkt(50.5, 17.5, 0), punkt(50.5, 17.5, 0), punkt(50.2, 17.9, 2), punkt(52, 17.5, 1), punkt(50.5, 16.9, 0)];
+    expect(policzWWidoku(punkty, widok)).toEqual([2, 0, 1]);
+  });
+
+  it('liczy punkty leżące na granicy prostokąta', () => {
+    const punkty = [punkt(50, 17, 0), punkt(51, 18, 0), punkt(50, 17.5, 1), punkt(50.5, 18, 2)];
+    expect(policzWWidoku(punkty, widok)).toEqual([2, 1, 1]);
+  });
+
+  it('pomija punkty tuż za granicą', () => {
+    const punkty = [punkt(49.999999, 17.5, 0), punkt(51.000001, 17.5, 0), punkt(50.5, 16.999999, 1), punkt(50.5, 18.000001, 2)];
+    expect(policzWWidoku(punkty, widok)).toEqual([0, 0, 0]);
   });
 });

@@ -66,13 +66,33 @@ export function odczytajZbior(zbior: ZwartyZbior) {
   const [rok, miesiac, dzien] = zbior.stan.split('-');
   const stopka = [t.stopka.dane(`${dzien}.${miesiac}.${rok}`), t.stopka.zastrzezenie];
   // i to indeks w punktach: po kliknięciu w kropkę UI odnajduje po nim punkt schronienia.
-  const geojson: FeatureCollection<Point, { i: number; d: Dostepnosc }> = {
+  const geojson: PunktyGeojson = {
     type: 'FeatureCollection',
     features: punkty.map((p, i) => ({
       type: 'Feature', geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, properties: { i, d: p.d },
     })),
   };
   return { punkty, geojson, stopka };
+}
+
+export type PunktyGeojson = FeatureCollection<Point, { i: number; d: Dostepnosc }>;
+
+// Filtr Dostępności: mapa podmienia dane źródła na wynik, więc klastry liczą tylko widoczne punkty.
+// Indeks i zostaje ten sam, co w pełnym zbiorze.
+export function przefiltruj(geojson: PunktyGeojson, wlaczone: ReadonlySet<Dostepnosc>): PunktyGeojson {
+  return { type: 'FeatureCollection', features: geojson.features.filter((f) => wlaczone.has(f.properties.d)) };
+}
+
+export type Prostokat = { zachod: number; poludnie: number; wschod: number; polnoc: number };
+
+// Liczniki legendy: punkty schronienia każdej Dostępności w widoku mapy, z granicą włącznie.
+// Liczy cały zbiór, więc filtr ich nie zmienia.
+export function policzWWidoku(punkty: Punkt[], { zachod, poludnie, wschod, polnoc }: Prostokat): Record<Dostepnosc, number> {
+  const liczniki: Record<Dostepnosc, number> = [0, 0, 0];
+  for (const p of punkty) {
+    if (p.lat >= poludnie && p.lat <= polnoc && p.lng >= zachod && p.lng <= wschod) liczniki[p.d]++;
+  }
+  return liczniki;
 }
 
 // Wszystko, co panel pokazuje o punkcie schronienia. „Prowadź” otwiera trasę pieszą w Google Maps.
@@ -112,5 +132,7 @@ const zaokraglij = (liczba: number) => Number(liczba.toFixed(6));
 
 // Szwedzki zapis daty to RRRR-MM-DD.
 const dzienWPolsce = (chwila: Date) => chwila.toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
+
+export const DOSTEPNOSCI: readonly Dostepnosc[] = [0, 1, 2];
 
 export const KOLOR_DOSTEPNOSCI: Record<Dostepnosc, string> = { 0: '#16a34a', 1: '#d97706', 2: '#64748b' };

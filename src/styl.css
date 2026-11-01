@@ -14,12 +14,54 @@ body,
   overflow: hidden;
 }
 
-/* Kontrolki MapLibre mają z-index 2, panel leży nad nimi, a „i” nad panelem. */
-.przycisk-info {
+/* Kontrolki MapLibre mają z-index 2, panel leży nad nimi, a legenda i „i” nad panelem.
+   Szerokość zostawia z prawej miejsce na przyciski mapy i mieści się nad panelem bocznym (400 px). */
+.gora {
   position: absolute;
   z-index: 4;
   top: calc(8px + env(safe-area-inset-top));
   left: 8px;
+  width: calc(100% - 60px);
+  max-width: 384px;
+}
+.legenda {
+  display: flex;
+  gap: 6px;
+}
+.legenda-pozycja {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+/* Wyszarzona jest treść, nie tło: przez półprzezroczyste tło prześwitywałyby napisy mapy. */
+.legenda-pozycja[aria-pressed='false'] > * {
+  opacity: 0.5;
+}
+.legenda-liczba {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.legenda-nazwa {
+  display: block;
+  font-size: 11px;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.przycisk-info {
+  margin-top: 8px;
   width: 36px;
   height: 36px;
   border-radius: 99px;
@@ -45,13 +87,13 @@ body,
   bottom: 0;
   left: 0;
   width: 400px;
-  padding: 60px 20px 20px;
+  padding: 112px 20px 20px;
   overflow: auto;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.18);
 }
 .panel-boczny .zamknij {
   position: absolute;
-  top: 60px;
+  top: 112px;
   right: 12px;
 }
 .panel-dolny {
@@ -118,6 +160,7 @@ body,
   margin: 0 0 4px;
 }
 .kropka {
+  box-sizing: border-box;
   width: 12px;
   height: 12px;
   border-radius: 99px;
