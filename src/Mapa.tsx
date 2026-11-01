@@ -5,8 +5,9 @@ import Map, {
 } from 'react-map-gl/maplibre';
 import type { ExpressionSpecification, GeoJSONSource, StyleSpecification } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
-import { KOLOR_DOSTEPNOSCI, type Prostokat, type Punkt } from './dane/zbior.ts';
+import { KOLOR_DOSTEPNOSCI, type Dostepnosc, type Prostokat, type Punkt } from './dane/zbior.ts';
 import { przekierujGlify, wczytajStyl } from './podklad.ts';
+import { dodajIkony, useWariant, type Wariant } from './prototyp-symbole.tsx';
 
 const PRZEKIERUJ_GLIFY = przekierujGlify(import.meta.env.BASE_URL);
 const SRODEK_POLSKI = { longitude: 19.4, latitude: 52.1, zoom: 5.6 };
@@ -32,6 +33,8 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
   const zwinieta = useRef(false);
   const [nadObiektem, setNadObiektem] = useState(false);
   const [styl, setStyl] = useState<StyleSpecification | null>(null);
+  const [ikony, setIkony] = useState(false); // PROTOTYP #9
+  const wariant = useWariant();
 
   useEffect(() => void wczytajStyl().then(setStyl), []);
 
@@ -82,10 +85,12 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
       mapStyle={styl}
       transformRequest={PRZEKIERUJ_GLIFY}
       initialViewState={SRODEK_POLSKI}
+      hash={import.meta.env.DEV} // PROTOTYP #9: widok w adresie, żeby porównywać warianty w tym samym miejscu
       attributionControl={false}
       onStyleData={zwinAtrybucje}
       onSourceData={zwinAtrybucje}
       onClick={klik}
+      onLoad={(e) => (dodajIkony(e.target), setIkony(true))}
       interactiveLayerIds={geojson ? ['klaster', 'punkt'] : []}
       onMouseEnter={() => setNadObiektem(true)}
       onMouseLeave={() => setNadObiektem(false)}
@@ -129,32 +134,13 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
             layout={{ 'text-field': ['get', 'point_count_abbreviated'], 'text-size': 13, 'text-font': ['Noto Sans Bold'] }}
             paint={{ 'text-color': '#fff' }}
           />
-          <Layer
-            id="punkt"
-            type="circle"
-            filter={['!', JEST_KLASTREM]}
-            paint={{
-              'circle-color': KOLOR_PUNKTU,
-              'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5, 17, 10],
-              'circle-stroke-color': '#fff',
-              'circle-stroke-width': 2,
-            }}
-          />
+          {ikony && warstwyPunktu(wariant)}
         </Source>
       )}
       {/* Osobne źródło bez klastrów: wybrany punkt leży nad klastrami i jest widoczny też po oddaleniu. */}
       {wybrany && (
         <Source id="wybrany" type="geojson" data={{ type: 'Point', coordinates: [wybrany.lng, wybrany.lat] }}>
-          <Layer
-            id="wybrany"
-            type="circle"
-            paint={{
-              'circle-color': KOLOR_DOSTEPNOSCI[wybrany.d],
-              'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 9, 17, 14],
-              'circle-stroke-color': CIEMNY,
-              'circle-stroke-width': 4,
-            }}
-          />
+          {ikony && warstwyWybranego(wariant, wybrany.d)}
         </Source>
       )}
     </Map>
@@ -178,3 +164,88 @@ function ZglosWidok({ onWidok }: { onWidok: (widok: Prostokat) => void }) {
   }, [m, onWidok]);
   return null;
 }
+
+// PROTOTYP #9: warstwy punktu i wybranego punktu dla każdego wariantu symboli.
+// Tablice, nie komponent: <Source> nadaje źródło tylko bezpośrednim dzieciom.
+const NIE_ZASLANIAJ = { 'icon-allow-overlap': true, 'icon-ignore-placement': true, 'text-allow-overlap': true, 'text-ignore-placement': true };
+const ZNAK: ExpressionSpecification = ['match', ['get', 'd'], 0, '24', 1, 'G', '?'];
+
+function warstwyPunktu(wariant: Wariant) {
+  if (wariant === 'B' || wariant === 'C') {
+    return [
+      <Layer
+        key={`punkt-${wariant}`}
+        id="punkt"
+        type="symbol"
+        filter={['!', JEST_KLASTREM]}
+        layout={{
+          ...NIE_ZASLANIAJ,
+          'icon-image': ['concat', `sym-${wariant}-`, ['to-string', ['get', 'd']]],
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 10, 0.6, 17, 1],
+        }}
+      />,
+    ];
+  }
+  const a = wariant === 'A';
+  return [
+    <Layer
+      key={`punkt-${wariant}`}
+      id="punkt"
+      type="circle"
+      filter={['!', JEST_KLASTREM]}
+      paint={{
+        'circle-color': KOLOR_PUNKTU,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, a ? 8 : 5, 17, a ? 13 : 10],
+        'circle-stroke-color': '#fff',
+        'circle-stroke-width': 2,
+      }}
+    />,
+    a && (
+      <Layer
+        key={`punkt-znak-${wariant}`}
+        id="punkt-znak"
+        type="symbol"
+        filter={['!', JEST_KLASTREM]}
+        layout={{ ...NIE_ZASLANIAJ, 'text-field': ZNAK, 'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 10, 8, 17, 12] }}
+        paint={{ 'text-color': '#fff' }}
+      />
+    ),
+  ];
+}
+
+function warstwyWybranego(wariant: Wariant, d: Dostepnosc) {
+  if (wariant === 'B' || wariant === 'C') {
+    return [
+      <Layer
+        key={`wybrany-${wariant}`}
+        id="wybrany"
+        type="symbol"
+        layout={{ ...NIE_ZASLANIAJ, 'icon-image': `sym-${wariant}-${d}-w`, 'icon-size': ['interpolate', ['linear'], ['zoom'], 10, 0.95, 17, 1.4] }}
+      />,
+    ];
+  }
+  const a = wariant === 'A';
+  return [
+    <Layer
+      key={`wybrany-${wariant}`}
+      id="wybrany"
+      type="circle"
+      paint={{
+        'circle-color': KOLOR_DOSTEPNOSCI[d],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, a ? 11 : 9, 17, a ? 16 : 14],
+        'circle-stroke-color': CIEMNY,
+        'circle-stroke-width': 4,
+      }}
+    />,
+    a && (
+      <Layer
+        key={`wybrany-znak-${wariant}`}
+        id="wybrany-znak"
+        type="symbol"
+        layout={{ ...NIE_ZASLANIAJ, 'text-field': ZNAKI_TEKST[d], 'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 10, 10, 17, 15] }}
+        paint={{ 'text-color': '#fff' }}
+      />
+    ),
+  ];
+}
+const ZNAKI_TEKST: Record<Dostepnosc, string> = { 0: '24', 1: 'G', 2: '?' };

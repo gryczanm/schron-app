@@ -9,6 +9,7 @@ import { Legenda } from './Legenda.tsx';
 import { Mapa } from './Mapa.tsx';
 import { Panel } from './Panel.tsx';
 import { t } from './teksty.ts';
+import { useWariant, Znak } from './prototyp-symbole.tsx';
 
 type Zbior = ReturnType<typeof odczytajZbior>;
 
@@ -19,6 +20,7 @@ export function App() {
   const [wlaczone, setWlaczone] = useState<ReadonlySet<Dostepnosc>>(() => new Set(DOSTEPNOSCI));
   const [widok, setWidok] = useState<Prostokat | null>(null);
   const panel = useRef<HTMLElement>(null);
+  const wariant = useWariant(); // PROTOTYP #9
   const wybrany = (zbior && wybranyIndeks != null && zbior.punkty[wybranyIndeks]) || null;
 
   const zamknij = () => {
@@ -94,7 +96,7 @@ export function App() {
         <Panel key={wybranyIndeks} zamknij={zamknij} elRef={panel} rozwiniecie={<p className="gmina">{t.gmina(szczegoly.gmina)}</p>}>
           <h2 className="tytul">{szczegoly.adres}</h2>
           <p className="dostepnosc">
-            <span className="kropka" style={{ background: KOLOR_DOSTEPNOSCI[wybrany.d] }} />
+            {wariant === '0' ? <span className="kropka" style={{ background: KOLOR_DOSTEPNOSCI[wybrany.d] }} /> : <Znak wariant={wariant} d={wybrany.d} />}
             <strong>{szczegoly.dostepnosc}</strong>
           </p>
           <p className="opis">{szczegoly.opis}</p>
