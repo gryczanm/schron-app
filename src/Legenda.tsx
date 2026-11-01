@@ -1,8 +1,6 @@
 // Legenda Dostępności jako filtr: przycisk ukrywa albo pokazuje punkty, liczba to punkty schronienia w widoku mapy.
-import { KOLOR_DOSTEPNOSCI, type Dostepnosc } from './dane/zbior.ts';
+import { DOSTEPNOSCI, KOLOR_DOSTEPNOSCI, type Dostepnosc } from './dane/zbior.ts';
 import { t } from './teksty.ts';
-
-const DOSTEPNOSCI: Dostepnosc[] = [0, 1, 2];
 
 type Wlasciwosci = {
   wlaczone: ReadonlySet<Dostepnosc>;

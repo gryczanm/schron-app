@@ -133,4 +133,6 @@ const zaokraglij = (liczba: number) => Number(liczba.toFixed(6));
 // Szwedzki zapis daty to RRRR-MM-DD.
 const dzienWPolsce = (chwila: Date) => chwila.toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
 
+export const DOSTEPNOSCI: readonly Dostepnosc[] = [0, 1, 2];
+
 export const KOLOR_DOSTEPNOSCI: Record<Dostepnosc, string> = { 0: '#16a34a', 1: '#d97706', 2: '#64748b' };

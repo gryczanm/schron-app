@@ -2,7 +2,7 @@
 // Panel pokazuje albo objaśnienia spod „i”, albo wybrany punkt schronienia, nigdy oba naraz.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  KOLOR_DOSTEPNOSCI, odczytajZbior, policzWWidoku, przefiltruj, szczegolyPunktu,
+  DOSTEPNOSCI, KOLOR_DOSTEPNOSCI, odczytajZbior, policzWWidoku, przefiltruj, szczegolyPunktu,
   type Dostepnosc, type Prostokat, type ZwartyZbior,
 } from './dane/zbior.ts';
 import { Legenda } from './Legenda.tsx';
@@ -16,7 +16,7 @@ export function App() {
   const [zbior, setZbior] = useState<Zbior | null>(null);
   const [info, setInfo] = useState(false);
   const [wybranyIndeks, setWybranyIndeks] = useState<number | null>(null);
-  const [wlaczone, setWlaczone] = useState<ReadonlySet<Dostepnosc>>(() => new Set([0, 1, 2]));
+  const [wlaczone, setWlaczone] = useState<ReadonlySet<Dostepnosc>>(() => new Set(DOSTEPNOSCI));
   const [widok, setWidok] = useState<Prostokat | null>(null);
   const panel = useRef<HTMLElement>(null);
   const wybrany = (zbior && wybranyIndeks != null && zbior.punkty[wybranyIndeks]) || null;
