@@ -75,6 +75,17 @@ export function odczytajZbior(zbior: ZwartyZbior) {
   return { punkty, geojson, stopka };
 }
 
+// Wszystko, co panel pokazuje o punkcie schronienia. „Prowadź” otwiera trasę pieszą w Google Maps.
+export function szczegolyPunktu(p: Punkt) {
+  return {
+    adres: p.adres,
+    gmina: p.gmina,
+    dostepnosc: t.dostepnosc[p.d],
+    opis: t.opisDostepnosci[p.d],
+    prowadz: `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}&travelmode=walking`,
+  };
+}
+
 // CSV wg RFC 4180: pola w cudzysłowie mogą zawierać przecinki, podwojone cudzysłowy i nowe linie.
 function parsujCsv(tekst: string): string[][] {
   const wiersze: string[][] = [];
