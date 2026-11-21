@@ -21,6 +21,17 @@ const pl = {
     informacje: 'Informacje',
     zamknij: 'Zamknij',
     prowadz: 'Prowadź',
+    doMapy: 'Przejdź do mapy',
+    stronaGlowna: 'Strona główna',
+  },
+  stronaGlowna: {
+    wstep: 'Mapa punktów schronienia w Polsce z otwartego zbioru Państwowej Straży Pożarnej. Działa też bez internetu.',
+    zbior: 'Punkty schronienia w zbiorze',
+    wszystkie: 'Wszystkie',
+    wczytywanie: 'Wczytywanie danych…',
+    alarm: 'Co robić w razie alarmu',
+    wiecej: 'Więcej w oficjalnych materiałach:',
+    bezAlarmow: 'Aplikacja nie ogłasza alarmów. Ogłaszają je organy ochrony ludności, m.in. syrenami, w RSO i przez Alert RCB.',
   },
 };
 

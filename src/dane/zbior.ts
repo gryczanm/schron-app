@@ -75,6 +75,8 @@ export function odczytajZbior(zbior: ZwartyZbior) {
   return { punkty, geojson, stopka };
 }
 
+export type Zbior = ReturnType<typeof odczytajZbior>;
+
 export type PunktyGeojson = FeatureCollection<Point, { i: number; d: Dostepnosc }>;
 
 // Filtr Dostępności: mapa podmienia dane źródła na wynik, więc klastry liczą tylko widoczne punkty.
@@ -92,6 +94,13 @@ export function policzWWidoku(punkty: Punkt[], { zachod, poludnie, wschod, polno
   for (const p of punkty) {
     if (p.lat >= poludnie && p.lat <= polnoc && p.lng >= zachod && p.lng <= wschod) liczniki[p.d]++;
   }
+  return liczniki;
+}
+
+// Statystyki strony głównej: punkty schronienia każdej Dostępności w całym zbiorze.
+export function policzDostepnosci(punkty: Punkt[]): Record<Dostepnosc, number> {
+  const liczniki: Record<Dostepnosc, number> = [0, 0, 0];
+  for (const p of punkty) liczniki[p.d]++;
   return liczniki;
 }
 

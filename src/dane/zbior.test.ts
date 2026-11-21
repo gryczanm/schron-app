@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { odczytajZbior, policzWWidoku, przefiltruj, szczegolyPunktu, zbudujZbior, type Dostepnosc } from './zbior.ts';
+import {
+  odczytajZbior, policzDostepnosci, policzWWidoku, przefiltruj, szczegolyPunktu, zbudujZbior, type Dostepnosc,
+} from './zbior.ts';
 
 const NAGLOWEK =
   'Identyfikator publiczny,Nazwa,Rodzaj obiektu,Opis ogolny,Gmina,Powiat,Wojewodztwo,Szerokosc geograficzna,Dlugosc geograficzna,Adres,Dostepnosc';
@@ -176,5 +178,17 @@ describe('liczniki punktów schronienia w widoku', () => {
   it('pomija punkty tuż za granicą', () => {
     const punkty = [punkt(49.999999, 17.5, 0), punkt(51.000001, 17.5, 0), punkt(50.5, 16.999999, 1), punkt(50.5, 18.000001, 2)];
     expect(policzWWidoku(punkty, widok)).toEqual([0, 0, 0]);
+  });
+});
+
+describe('statystyki zbioru na stronie głównej', () => {
+  const punkt = (d: Dostepnosc) => ({ id: 'OZO', lat: 50, lng: 17, adres: '', gmina: '', d });
+
+  it('liczy punkty schronienia każdej Dostępności w całym zbiorze', () => {
+    expect(policzDostepnosci([punkt(2), punkt(0), punkt(2), punkt(2), punkt(1)])).toEqual([1, 1, 3]);
+  });
+
+  it('dla pustego zbioru daje same zera', () => {
+    expect(policzDostepnosci([])).toEqual([0, 0, 0]);
   });
 });

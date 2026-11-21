@@ -1,18 +1,21 @@
 // Układ H: mapa na cały ekran, legenda-filtr i pod nią „i” w lewym górnym rogu, jeden panel (dolny na telefonie, boczny na komputerze).
 // Panel pokazuje albo objaśnienia spod „i”, albo wybrany punkt schronienia, nigdy oba naraz.
+// Bez #mapa w adresie aplikacja pokazuje stronę główną.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   DOSTEPNOSCI, KOLOR_DOSTEPNOSCI, odczytajZbior, policzWWidoku, przefiltruj, szczegolyPunktu,
-  type Dostepnosc, type Prostokat, type ZwartyZbior,
+  type Dostepnosc, type Prostokat, type Zbior, type ZwartyZbior,
 } from './dane/zbior.ts';
 import { Legenda } from './Legenda.tsx';
 import { Mapa } from './Mapa.tsx';
 import { Panel } from './Panel.tsx';
+import { StronaGlowna } from './StronaGlowna.tsx';
 import { t } from './teksty.ts';
 
-type Zbior = ReturnType<typeof odczytajZbior>;
+const naMapieWAdresie = () => location.hash === '#mapa';
 
 export function App() {
+  const [naMapie, setNaMapie] = useState(naMapieWAdresie);
   const [zbior, setZbior] = useState<Zbior | null>(null);
   const [info, setInfo] = useState(false);
   const [wybranyIndeks, setWybranyIndeks] = useState<number | null>(null);
@@ -42,6 +45,17 @@ export function App() {
     return () => removeEventListener('keydown', zamknijEscape);
   }, []);
 
+  // Powrót na stronę główną zamyka panel, żeby mapa otwierała się bez niego.
+  useEffect(() => {
+    const zmianaAdresu = () => {
+      const mapa = naMapieWAdresie();
+      setNaMapie(mapa);
+      if (!mapa) zamknij();
+    };
+    addEventListener('hashchange', zmianaAdresu);
+    return () => removeEventListener('hashchange', zmianaAdresu);
+  }, []);
+
   // Wyłączenie Dostępności wybranego punktu zamyka panel i odznacza punkt.
   const przelacz = (d: Dostepnosc) => {
     const nowe = new Set(wlaczone);
@@ -54,6 +68,8 @@ export function App() {
   const geojson = useMemo(() => (zbior ? przefiltruj(zbior.geojson, wlaczone) : undefined), [zbior, wlaczone]);
   const wWidoku = useMemo(() => (zbior && widok ? policzWWidoku(zbior.punkty, widok) : null), [zbior, widok]);
   const szczegoly = wybrany && szczegolyPunktu(wybrany);
+
+  if (!naMapie) return <StronaGlowna zbior={zbior} />;
 
   return (
     <div className="aplikacja">
@@ -87,6 +103,9 @@ export function App() {
               {zbior.stopka[1]}
             </p>
           )}
+          <a className="link-strona-glowna" href="#">
+            {t.przyciski.stronaGlowna}
+          </a>
         </Panel>
       )}
       {wybrany && szczegoly && (
