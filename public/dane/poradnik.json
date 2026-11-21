@@ -1,0 +1,17 @@
+{
+  "porady": [
+    "Już teraz sprawdź na mapie najbliższy punkt schronienia i zaplanuj drogę do niego.",
+    "Alarm to modulowany (falujący) dźwięk syreny przez 3 minuty, a odwołanie alarmu to ciągły dźwięk przez 3 minuty.",
+    "Po usłyszeniu alarmu włącz radio lub telewizor i stosuj się do komunikatów.",
+    "W budynku przejdź do pomieszczenia bez okien, tak żeby od zewnątrz dzieliły cię co najmniej dwie solidne ściany. Korzystaj ze schodów, nie z windy.",
+    "Na zewnątrz idź do najbliższego punktu schronienia, jeśli zdążysz bezpiecznie dojść (punkty „Na żądanie” mogą być zamknięte). Jeśli nie, schroń się w podziemnym garażu, tunelu albo budynku o solidnych ścianach.",
+    "Gdy usłyszysz wybuch na otwartym terenie, połóż się na ziemi, najlepiej w zagłębieniu, i osłoń głowę.",
+    "Nie wychodź pochopnie z miejsca schronienia. Zamiast dzwonić, wysyłaj SMS-y, żeby nie przeciążać sieci."
+  ],
+  "linki": [
+    { "nazwa": "Poradnik bezpieczeństwa (gov.pl)", "adres": "https://www.gov.pl/web/poradnikbezpieczenstwa" },
+    { "nazwa": "Instrukcja reagowania (MSWiA)", "adres": "https://www.gov.pl/web/olioc/instrukcja-reagowania" },
+    { "nazwa": "Regionalny System Ostrzegania – RSO", "adres": "https://www.gov.pl/web/kgpsp/regionalny-system-ostrzegania" },
+    { "nazwa": "Gdzie się ukryć – mapa PSP", "adres": "https://gdziesieukryc.pl" }
+  ]
+}
