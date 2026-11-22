@@ -25,3 +25,7 @@ Dostępność punktu schronienia otwartego tylko w godzinach pracy obiektu. Zbi�
 **Na żądanie**:
 Dostępność punktu schronienia, który jest zwykle zamknięty. Zarządca powinien go udostępnić po ogłoszeniu alarmu, ale tylko w miarę możliwości, więc dostęp nie jest gwarantowany.
 _Avoid_: otwarty na żądanie, dostępny na żądanie
+
+**Prowadzenie**:
+Wskazywanie w aplikacji kierunku i odległości w linii prostej od bieżącej pozycji użytkownika do wybranego punktu schronienia. Działa bez internetu i nie wyznacza trasy po ulicach.
+_Avoid_: nawigacja, trasa (trasa po ulicach to Google Maps)
