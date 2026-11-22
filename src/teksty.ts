@@ -38,7 +38,6 @@ const pl = {
     informacje: 'Informacje',
     zamknij: 'Zamknij',
     prowadz: 'Prowadź',
-    trasaGoogle: 'Trasa w Google Maps',
     zakoncz: 'Zakończ Prowadzenie',
     wskaz: 'Wskaż moją pozycję',
     mojaLokalizacja: 'Użyj mojej lokalizacji',

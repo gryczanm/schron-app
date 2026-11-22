@@ -134,15 +134,10 @@ export function App() {
             <strong>{szczegoly.dostepnosc}</strong>
           </p>
           <p className="opis">{szczegoly.opis}</p>
-          <div className="przyciski">
-            {/* Zawsze Prowadzenie w aplikacji, z internetem i bez. Trasa po ulicach to Google Maps obok. */}
-            <button className="prowadz" onClick={prowadzenie.start}>
-              {t.przyciski.prowadz}
-            </button>
-            <a className="przycisk-drugi" href={szczegoly.trasa} target="_blank" rel="noopener noreferrer">
-              {t.przyciski.trasaGoogle}
-            </a>
-          </div>
+          {/* Prowadzenie zawsze w aplikacji, z internetem i bez, bez odsyłania do zewnętrznych map. */}
+          <button className="prowadz" onClick={prowadzenie.start}>
+            {t.przyciski.prowadz}
+          </button>
         </Panel>
       )}
     </div>

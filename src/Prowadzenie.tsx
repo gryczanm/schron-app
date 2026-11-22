@@ -93,7 +93,7 @@ export function PasekProwadzenia({ cel, p }: { cel: Punkt; p: Prowadzenie }) {
   );
 }
 
-// Na dole: Dostępność celu, trasa w Google Maps i ręczne wskazanie pozycji.
+// Na dole: Dostępność celu i ręczne wskazanie pozycji.
 export function DolProwadzenia({ cel, p }: { cel: Punkt; p: Prowadzenie }) {
   const szczegoly = szczegolyPunktu(cel);
   return (
@@ -104,9 +104,6 @@ export function DolProwadzenia({ cel, p }: { cel: Punkt; p: Prowadzenie }) {
       </p>
       {p.wskazywanie && <p className="prowadzenie-podpowiedz">{t.prowadzenie.wskazywanie}</p>}
       <div className="przyciski">
-        <a className="przycisk-drugi" href={szczegoly.trasa} target="_blank" rel="noopener noreferrer">
-          {t.przyciski.trasaGoogle}
-        </a>
         <button className="przycisk-drugi" aria-pressed={p.wskazywanie} onClick={p.przelaczWskazywanie}>
           {t.przyciski.wskaz}
         </button>
