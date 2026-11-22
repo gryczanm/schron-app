@@ -1,0 +1,48 @@
+/* PROTOTYP – style do wyrzucenia razem z Prowadzenie.prototyp.tsx */
+.pp-etykieta { margin: 0 0 2px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; font-weight: 700; }
+.pp-dost { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.pp-odl { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.pp-male { font-size: 12px; color: #475569; }
+.pp-a-wiersz { display: flex; align-items: center; gap: 14px; margin: 12px 0; }
+.pp-przyciski { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+.pp-zakoncz, .pp-gm { padding: 10px 18px; border-radius: 99px; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+.pp-zakoncz { border: 2px solid #0f172a; background: #fff; color: #0f172a; }
+.pp-gm { border: 2px solid #cbd5e1; background: #fff; color: #1d4ed8; }
+.pp-x { width: 36px; height: 36px; border-radius: 99px; border: 0; background: #f1f5f9; font-size: 20px; cursor: pointer; flex: none; }
+.pp-x-jasny { background: rgba(255,255,255,.15); color: #fff; }
+.pp-komunikat, .pp-na-miejscu { display: flex; flex-direction: column; gap: 2px; margin: 12px 0; padding: 12px; border-radius: 12px; background: #fef3c7; }
+.pp-komunikat.pp-ustalanie { background: #f1f5f9; }
+.pp-na-miejscu { background: #dcfce7; }
+.pp-komunikat strong, .pp-na-miejscu strong { font-size: 17px; }
+.pp-uwaga { margin-top: 8px; font-size: 12px; color: #92400e; max-width: 300px; text-align: center; }
+
+/* B */
+.pp-b { position: absolute; inset: 0; z-index: 5; background: #fff; display: flex; flex-direction: column; padding: calc(16px + env(safe-area-inset-top)) 16px calc(56px + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.pp-b-gora { display: flex; flex-direction: column; gap: 2px; text-align: center; align-items: center; }
+.pp-b-gora strong { font-size: 18px; }
+.pp-b-srodek { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.pp-b-odl { font-size: 56px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.pp-b-dol { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pp-b-mini { position: absolute; z-index: 5; left: 8px; right: 8px; bottom: calc(52px + env(safe-area-inset-bottom)); max-width: 420px; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.25); }
+.pp-b-mini > div { flex: 1; min-width: 0; }
+.pp-b-mini .pp-odl { font-size: 24px; }
+
+/* C */
+.pp-c-baner { position: absolute; z-index: 5; top: calc(8px + env(safe-area-inset-top)); left: 8px; right: 56px; max-width: 460px; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #0f172a; color: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.3); }
+.pp-c-tekst { flex: 1; min-width: 0; }
+.pp-c-odl { font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.pp-c-male { font-size: 12px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pp-c-dol { position: absolute; z-index: 5; left: 8px; bottom: calc(52px + env(safe-area-inset-bottom)); display: flex; gap: 8px; align-items: center; padding: 6px 6px 6px 12px; background: #fff; border-radius: 99px; box-shadow: 0 2px 10px rgba(0,0,0,.2); }
+
+/* pasek prototypu */
+.pp-pasek-kontener { position: fixed; z-index: 50; left: 50%; bottom: calc(6px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.pp-pasek { display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 99px; background: #7c3aed; color: #fff; font: 12px system-ui; font-weight: 700; box-shadow: 0 4px 14px rgba(0,0,0,.35); white-space: nowrap; }
+.pp-pasek button { width: 28px; height: 28px; border: 0; border-radius: 99px; background: rgba(255,255,255,.18); color: #fff; font-size: 16px; cursor: pointer; }
+.pp-pasek button.pp-wl { background: #fff; color: #7c3aed; }
+.pp-pasek span { padding: 0 6px; }
+.pp-sim { width: min(300px, 90vw); max-height: 60vh; overflow: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: #faf5ff; border: 2px solid #7c3aed; font: 12px system-ui; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+.pp-sim label { display: flex; flex-direction: column; gap: 2px; }
+.pp-sim label:has(> input[type='checkbox']) { flex-direction: row; align-items: center; gap: 6px; }
+.pp-rzad { display: flex; gap: 10px; align-items: center; }
+.pp-sim pre { margin: 0; padding: 6px; background: #fff; border-radius: 6px; font-size: 10px; white-space: pre-wrap; }
+.panel-dolny .tresc { padding-bottom: calc(52px + env(safe-area-inset-bottom)); }

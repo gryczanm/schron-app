@@ -9,6 +9,7 @@ import { Legenda } from './Legenda.tsx';
 import { Mapa } from './Mapa.tsx';
 import { Panel } from './Panel.tsx';
 import { t } from './teksty.ts';
+import { PROTOTYP, useProwadzenie } from './prototyp-prowadzenie/Prowadzenie.prototyp.tsx'; // PROTOTYP
 
 type Zbior = ReturnType<typeof odczytajZbior>;
 
@@ -54,6 +55,7 @@ export function App() {
   const geojson = useMemo(() => (zbior ? przefiltruj(zbior.geojson, wlaczone) : undefined), [zbior, wlaczone]);
   const wWidoku = useMemo(() => (zbior && widok ? policzWWidoku(zbior.punkty, widok) : null), [zbior, widok]);
   const szczegoly = wybrany && szczegolyPunktu(wybrany);
+  const proto = useProwadzenie(wybrany); // PROTOTYP
 
   return (
     <div className="aplikacja">
@@ -61,11 +63,12 @@ export function App() {
         geojson={geojson}
         wybrany={wybrany}
         onWybierz={wybierz}
-        onKlikMapy={zamknij}
+        onKlikMapy={(miejsce) => proto.klikMapy(miejsce) || zamknij()}
         onWidok={setWidok}
         panel={panel}
+        nakladka={proto.nakladkaMapy}
       />
-      <div className="gora">
+      <div className="gora" hidden={proto.ukryjGore}>
         <Legenda wlaczone={wlaczone} przelacz={przelacz} wWidoku={wWidoku} />
         <button
           className={`przycisk-info${info ? ' aktywny' : ''}`}
@@ -89,20 +92,35 @@ export function App() {
           )}
         </Panel>
       )}
-      {wybrany && szczegoly && (
+      {wybrany && szczegoly && !proto.ukryjPanel && (
         // key: klik w inny punkt podmienia treść i wraca do podglądu.
-        <Panel key={wybranyIndeks} zamknij={zamknij} elRef={panel} rozwiniecie={<p className="gmina">{t.gmina(szczegoly.gmina)}</p>}>
-          <h2 className="tytul">{szczegoly.adres}</h2>
-          <p className="dostepnosc">
-            <span className="kropka" style={{ background: KOLOR_DOSTEPNOSCI[wybrany.d] }} />
-            <strong>{szczegoly.dostepnosc}</strong>
-          </p>
-          <p className="opis">{szczegoly.opis}</p>
-          <a className="prowadz" href={szczegoly.prowadz} target="_blank" rel="noopener noreferrer">
-            {t.przyciski.prowadz}
-          </a>
+        <Panel key={wybranyIndeks} zamknij={zamknij} elRef={panel} rozwiniecie={proto.aktywne ? undefined : <p className="gmina">{t.gmina(szczegoly.gmina)}</p>}>
+          {proto.panelTresc ?? (
+            <>
+              <h2 className="tytul">{szczegoly.adres}</h2>
+              <p className="dostepnosc">
+                <span className="kropka" style={{ background: KOLOR_DOSTEPNOSCI[wybrany.d] }} />
+                <strong>{szczegoly.dostepnosc}</strong>
+              </p>
+              <p className="opis">{szczegoly.opis}</p>
+              {PROTOTYP ? (
+                <div className="pp-przyciski">
+                  <button className="prowadz" style={{ border: 0, font: 'inherit', fontWeight: 700, cursor: 'pointer', margin: 0 }} onClick={proto.start}>
+                    {t.przyciski.prowadz}
+                  </button>
+                  <a className="pp-gm" href={szczegoly.prowadz} target="_blank" rel="noopener noreferrer">Trasa w Google Maps</a>
+                </div>
+              ) : (
+                <a className="prowadz" href={szczegoly.prowadz} target="_blank" rel="noopener noreferrer">
+                  {t.przyciski.prowadz}
+                </a>
+              )}
+            </>
+          )}
         </Panel>
       )}
+      {proto.ekran}
+      {proto.pasek}
     </div>
   );
 }

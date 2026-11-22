@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { OFFLINE } from './prototyp-prowadzenie/Prowadzenie.prototyp.tsx'; // PROTOTYP
 import Map, {
   AttributionControl, GeolocateControl, Layer, NavigationControl, Source,
   useMap, type MapLayerMouseEvent, type MapRef,
@@ -22,18 +23,20 @@ type Wlasciwosci = {
   geojson?: FeatureCollection<Point>;
   wybrany: Punkt | null;
   onWybierz: (i: number) => void; // i to indeks punktu schronienia w zbiorze
-  onKlikMapy: () => void;
+  onKlikMapy: (miejsce: [number, number]) => void;
+  nakladka?: ReactNode; // PROTOTYP: warstwy Prowadzenia
   onWidok: (widok: Prostokat) => void; // od razu po utworzeniu mapy i po każdym zakończonym ruchu
   panel: RefObject<HTMLElement>; // część ekranu zasłonięta przez panel
 };
 
-export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }: Wlasciwosci) {
+export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel, nakladka }: Wlasciwosci) {
   const mapa = useRef<MapRef>(null);
   const zwinieta = useRef(false);
   const [nadObiektem, setNadObiektem] = useState(false);
   const [styl, setStyl] = useState<StyleSpecification | null>(null);
 
-  useEffect(() => void wczytajStyl().then(setStyl), []);
+  // PROTOTYP: ?offline udaje brak sieci dla podkładu.
+  useEffect(() => void wczytajStyl(OFFLINE ? () => Promise.reject(new Error('offline')) : fetch).then(setStyl), []);
 
   // Wybrany punkt ląduje na środku części mapy, której panel nie zasłania. Przybliżenie zostaje.
   // offset, nie padding: padding zostaje w mapie i przesuwałby późniejsze przybliżenia klastrów.
@@ -62,7 +65,7 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
     const m = mapa.current;
     // e.features pochodzi z ostatniego ruchu myszy, a po przybliżeniu klaster pod kursorem już nie istnieje.
     const [obiekt] = m?.getLayer('klaster') ? m.queryRenderedFeatures(e.point, { layers: ['klaster', 'punkt'] }) : [];
-    if (!m || !obiekt) return onKlikMapy();
+    if (!m || !obiekt) return onKlikMapy([e.lngLat.lng, e.lngLat.lat]);
     if (obiekt.layer.id === 'punkt') return onWybierz(obiekt.properties.i);
     const klaster = obiekt;
     try {
@@ -157,6 +160,7 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
           />
         </Source>
       )}
+      {nakladka}
     </Map>
   );
 }
