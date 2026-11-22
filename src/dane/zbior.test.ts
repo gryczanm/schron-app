@@ -129,8 +129,8 @@ describe('szczegóły punktu schronienia', () => {
     expect(szczegolyPunktu({ ...punkt, d: 1 }).opis).toBe('Dostępny w godzinach pracy obiektu. Godzin nie podano.');
   });
 
-  it('prowadzi pieszo do punktu w Google Maps', () => {
-    expect(szczegolyPunktu(punkt).prowadz).toBe(
+  it('daje trasę pieszą do punktu w Google Maps', () => {
+    expect(szczegolyPunktu(punkt).trasa).toBe(
       'https://www.google.com/maps/dir/?api=1&destination=50.4,17.1&travelmode=walking',
     );
   });
