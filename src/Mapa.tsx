@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import Map, {
   AttributionControl, GeolocateControl, Layer, NavigationControl, Source,
   useMap, type MapLayerMouseEvent, type MapRef,
@@ -23,11 +23,14 @@ type Wlasciwosci = {
   wybrany: Punkt | null;
   onWybierz: (i: number) => void; // i to indeks punktu schronienia w zbiorze
   onKlikMapy: () => void;
+  onWskaz?: (miejsce: [number, number]) => void; // tryb wskazywania pozycji: każdy klik w mapę podaje miejsce
+  centrujWybrany: boolean; // false podczas Prowadzenia, bo wtedy kamerą steruje Prowadzenie
   onWidok: (widok: Prostokat) => void; // od razu po utworzeniu mapy i po każdym zakończonym ruchu
   panel: RefObject<HTMLElement>; // część ekranu zasłonięta przez panel
+  children?: ReactNode; // dodatkowe warstwy mapy (Prowadzenie)
 };
 
-export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }: Wlasciwosci) {
+export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWskaz, centrujWybrany, onWidok, panel, children }: Wlasciwosci) {
   const mapa = useRef<MapRef>(null);
   const zwinieta = useRef(false);
   const [nadObiektem, setNadObiektem] = useState(false);
@@ -39,7 +42,8 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
   // offset, nie padding: padding zostaje w mapie i przesuwałby późniejsze przybliżenia klastrów.
   useEffect(() => {
     const m = mapa.current;
-    if (!m || !wybrany) return;
+    // centrujWybrany celowo poza zależnościami: koniec Prowadzenia nie przesuwa mapy z powrotem na punkt.
+    if (!m || !wybrany || !centrujWybrany) return;
     const ramka = panel.current?.getBoundingClientRect();
     const mapaRamka = m.getContainer().getBoundingClientRect();
     let offset: [number, number] = [0, 0];
@@ -59,6 +63,7 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
   };
 
   const klik = async (e: MapLayerMouseEvent) => {
+    if (onWskaz) return onWskaz([e.lngLat.lng, e.lngLat.lat]);
     const m = mapa.current;
     // e.features pochodzi z ostatniego ruchu myszy, a po przybliżeniu klaster pod kursorem już nie istnieje.
     const [obiekt] = m?.getLayer('klaster') ? m.queryRenderedFeatures(e.point, { layers: ['klaster', 'punkt'] }) : [];
@@ -89,7 +94,7 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
       interactiveLayerIds={geojson ? ['klaster', 'punkt'] : []}
       onMouseEnter={() => setNadObiektem(true)}
       onMouseLeave={() => setNadObiektem(false)}
-      cursor={nadObiektem ? 'pointer' : ''}
+      cursor={onWskaz ? 'crosshair' : nadObiektem ? 'pointer' : ''}
       style={{ position: 'absolute', inset: 0 }}
     >
       <NavigationControl position="top-right" />
@@ -157,6 +162,7 @@ export function Mapa({ geojson, wybrany, onWybierz, onKlikMapy, onWidok, panel }
           />
         </Source>
       )}
+      {children}
     </Map>
   );
 }

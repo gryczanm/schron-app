@@ -1,5 +1,6 @@
 // Układ H: mapa na cały ekran, legenda-filtr i pod nią „i” w lewym górnym rogu, jeden panel (dolny na telefonie, boczny na komputerze).
 // Panel pokazuje albo objaśnienia spod „i”, albo wybrany punkt schronienia, nigdy oba naraz.
+// Podczas Prowadzenia ciemny pasek u góry i przyciski na dole zastępują legendę i panel.
 // Bez #mapa w adresie aplikacja pokazuje stronę główną.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -9,6 +10,7 @@ import {
 import { Legenda } from './Legenda.tsx';
 import { Mapa } from './Mapa.tsx';
 import { Panel } from './Panel.tsx';
+import { DolProwadzenia, PasekProwadzenia, ProwadzenieNaMapie, useProwadzenie } from './Prowadzenie.tsx';
 import { StronaGlowna } from './StronaGlowna.tsx';
 import { t } from './teksty.ts';
 
@@ -23,6 +25,8 @@ export function App() {
   const [widok, setWidok] = useState<Prostokat | null>(null);
   const panel = useRef<HTMLElement>(null);
   const wybrany = (zbior && wybranyIndeks != null && zbior.punkty[wybranyIndeks]) || null;
+  const prowadzenie = useProwadzenie(wybrany);
+  const prowadzi = prowadzenie.aktywne && wybrany != null;
 
   const zamknij = () => {
     setInfo(false);
@@ -39,11 +43,13 @@ export function App() {
       .then((z) => setZbior(odczytajZbior(z)));
   }, []);
 
+  // Escape podczas Prowadzenia kończy je i wraca do panelu punktu, a poza nim zamyka panel.
+  const { zakoncz } = prowadzenie;
   useEffect(() => {
-    const zamknijEscape = (e: KeyboardEvent) => e.key === 'Escape' && zamknij();
-    addEventListener('keydown', zamknijEscape);
-    return () => removeEventListener('keydown', zamknijEscape);
-  }, []);
+    const escape = (e: KeyboardEvent) => e.key === 'Escape' && (prowadzi ? zakoncz() : zamknij());
+    addEventListener('keydown', escape);
+    return () => removeEventListener('keydown', escape);
+  }, [prowadzi, zakoncz]);
 
   // Powrót na stronę główną zamyka panel, żeby mapa otwierała się bez niego.
   useEffect(() => {
@@ -77,11 +83,22 @@ export function App() {
         geojson={geojson}
         wybrany={wybrany}
         onWybierz={wybierz}
-        onKlikMapy={zamknij}
+        // Podczas Prowadzenia klik w puste miejsce mapy niczego nie zamyka: kończy je tylko × albo Escape.
+        onKlikMapy={prowadzi ? () => {} : zamknij}
+        onWskaz={prowadzi && prowadzenie.wskazywanie ? prowadzenie.wskaz : undefined}
+        centrujWybrany={!prowadzi}
         onWidok={setWidok}
         panel={panel}
-      />
-      <div className="gora">
+      >
+        {prowadzi && <ProwadzenieNaMapie cel={wybrany} p={prowadzenie} />}
+      </Mapa>
+      {prowadzi && (
+        <>
+          <PasekProwadzenia cel={wybrany} p={prowadzenie} />
+          <DolProwadzenia cel={wybrany} p={prowadzenie} />
+        </>
+      )}
+      <div className="gora" hidden={prowadzi}>
         <Legenda wlaczone={wlaczone} przelacz={przelacz} wWidoku={wWidoku} />
         <button
           className={`przycisk-info${info ? ' aktywny' : ''}`}
@@ -108,7 +125,7 @@ export function App() {
           </a>
         </Panel>
       )}
-      {wybrany && szczegoly && (
+      {wybrany && szczegoly && !prowadzi && (
         // key: klik w inny punkt podmienia treść i wraca do podglądu.
         <Panel key={wybranyIndeks} zamknij={zamknij} elRef={panel} rozwiniecie={<p className="gmina">{t.gmina(szczegoly.gmina)}</p>}>
           <h2 className="tytul">{szczegoly.adres}</h2>
@@ -117,9 +134,15 @@ export function App() {
             <strong>{szczegoly.dostepnosc}</strong>
           </p>
           <p className="opis">{szczegoly.opis}</p>
-          <a className="prowadz" href={szczegoly.prowadz} target="_blank" rel="noopener noreferrer">
-            {t.przyciski.prowadz}
-          </a>
+          <div className="przyciski">
+            {/* Zawsze Prowadzenie w aplikacji, z internetem i bez. Trasa po ulicach to Google Maps obok. */}
+            <button className="prowadz" onClick={prowadzenie.start}>
+              {t.przyciski.prowadz}
+            </button>
+            <a className="przycisk-drugi" href={szczegoly.trasa} target="_blank" rel="noopener noreferrer">
+              {t.przyciski.trasaGoogle}
+            </a>
+          </div>
         </Panel>
       )}
     </div>

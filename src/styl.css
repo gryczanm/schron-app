@@ -175,11 +175,119 @@ body,
   display: inline-block;
   margin-bottom: 12px;
   padding: 10px 20px;
+  border: 0;
   border-radius: 99px;
   background: #1d4ed8;
   color: #fff;
+  font: inherit;
   font-weight: 700;
   text-decoration: none;
+  cursor: pointer;
+}
+.przyciski {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.przyciski > * {
+  margin: 0;
+}
+.przycisk-drugi {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 2px solid #cbd5e1;
+  border-radius: 99px;
+  background: #fff;
+  color: #1d4ed8;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.przycisk-drugi[aria-pressed='true'] {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+}
+
+/* Prowadzenie: ciemny pasek u góry jak w nawigacji. Z prawej zostaje miejsce na przyciski mapy. */
+.prowadzenie-pasek {
+  position: absolute;
+  z-index: 4;
+  top: calc(8px + env(safe-area-inset-top));
+  left: 8px;
+  right: 56px;
+  max-width: 460px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.strzalka {
+  flex: none;
+}
+.strzalka path {
+  transition: transform 0.4s;
+}
+.prowadzenie-tekst {
+  flex: 1;
+  min-width: 0;
+}
+.prowadzenie-odleglosc {
+  font-size: 28px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.prowadzenie-male {
+  font-size: 12px;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prowadzenie-tytul {
+  font-size: 18px;
+  font-weight: 800;
+}
+.prowadzenie-opis {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+.zamknij-jasny {
+  flex: none;
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+/* Na dole: Dostępność celu i przyciski. Z prawej zostaje miejsce na ⓘ atrybucji. */
+.prowadzenie-dol {
+  position: absolute;
+  z-index: 4;
+  left: 8px;
+  right: 44px;
+  bottom: calc(8px + env(safe-area-inset-bottom));
+  max-width: 460px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.prowadzenie-dol .przyciski {
+  margin-bottom: 0;
+}
+.prowadzenie-podpowiedz {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: #1d4ed8;
 }
 
 /* Strona główna: przewijana kolumna na tle w kolorze ekranu startowego PWA. */

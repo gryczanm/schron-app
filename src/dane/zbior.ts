@@ -104,14 +104,14 @@ export function policzDostepnosci(punkty: Punkt[]): Record<Dostepnosc, number> {
   return liczniki;
 }
 
-// Wszystko, co panel pokazuje o punkcie schronienia. „Prowadź” otwiera trasę pieszą w Google Maps.
+// Wszystko, co panel pokazuje o punkcie schronienia. „Trasa w Google Maps” otwiera trasę pieszą.
 export function szczegolyPunktu(p: Punkt) {
   return {
     adres: p.adres,
     gmina: p.gmina,
     dostepnosc: t.dostepnosc[p.d],
     opis: t.opisDostepnosci[p.d],
-    prowadz: `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}&travelmode=walking`,
+    trasa: `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}&travelmode=walking`,
   };
 }
 
