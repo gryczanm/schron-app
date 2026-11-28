@@ -417,3 +417,16 @@ body,
   background: #0d9488;
   color: #fff;
 }
+
+/* Strona główna: pasek proporcji Dostępności pod „Wszystkie”, napełnia się razem z licznikami */
+.sg-pasek {
+  display: flex;
+  height: 10px;
+  margin: 6px 0 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+.sg-pasek span {
+  height: 100%;
+}
