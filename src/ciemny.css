@@ -1,0 +1,138 @@
+/* Ciemny motyw (#38): włącza się sam, gdy system jest w trybie ciemnym.
+   Nadpisuje tylko kolory ze styl.css. Podkład mapy i kolory Dostępności zostają bez zmian.
+   Paleta: tło #0f172a, karty i panele #1e293b, tekst #e2e8f0, tekst drugorzędny #94a3b8 (kontrast ≥ 4.5:1). */
+@media (prefers-color-scheme: dark) {
+  /* Ciemne paski przewijania i domyślne kontrolki przeglądarki. */
+  :root {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    color: #e2e8f0;
+    background: #0f172a;
+  }
+
+  /* Strona główna */
+  .strona-glowna {
+    background: #0f172a;
+  }
+  /* Jasna grafika lekko przygaszona, żeby nie świeciła w nocy. */
+  .sg-grafika {
+    filter: brightness(0.85);
+  }
+  .sg-wstep {
+    color: #cbd5e1;
+  }
+  /* Ciemniejszy morski: biały napis ma kontrast 5.5:1 zamiast 3.7:1. */
+  .sg-do-mapy {
+    background: #0f766e;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  .sg-karta {
+    background: #1e293b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  .sg-liczniki li {
+    border-bottom-color: #334155;
+  }
+  .sg-wczytywanie,
+  .stopka {
+    color: #94a3b8;
+  }
+  .sg-linki a,
+  .link-strona-glowna {
+    color: #93c5fd;
+  }
+
+  /* Przełącznik języka */
+  .wybor-jezyka button {
+    border-color: #475569;
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+  .wybor-jezyka button[aria-pressed='true'] {
+    border-color: #0f766e;
+    background: #0f766e;
+    color: #fff;
+  }
+
+  /* Legenda i przycisk „i” nad mapą */
+  .legenda-pozycja {
+    border-color: #334155;
+    background: #1e293b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+  .legenda-nazwa {
+    color: #94a3b8;
+  }
+  .przycisk-info {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+  .przycisk-info.aktywny {
+    border-color: #e2e8f0;
+  }
+
+  /* Panel „i” i panel punktu */
+  .panel {
+    background: #1e293b;
+  }
+  .panel-boczny,
+  .panel-dolny {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  .uchwyt-pasek {
+    background: #475569;
+  }
+  .zamknij {
+    background: #334155;
+    color: #e2e8f0;
+  }
+  .opis,
+  .gmina {
+    color: #cbd5e1;
+  }
+  .przycisk-drugi {
+    border-color: #475569;
+    background: #1e293b;
+    color: #93c5fd;
+  }
+  .przycisk-drugi[aria-pressed='true'] {
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+    color: #fff;
+  }
+
+  /* Prowadzenie: górny pasek jest już ciemny, jaśnieje tylko dolna karta. */
+  .zamknij-jasny {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+  .prowadzenie-pasek {
+    border: 1px solid #334155;
+  }
+  .prowadzenie-dol {
+    background: #1e293b;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  }
+  .prowadzenie-podpowiedz {
+    color: #93c5fd;
+  }
+
+  /* Przyciski MapLibre (przybliżanie, położenie): ciemne tło, odwrócone ikony. */
+  .maplibregl-ctrl-group {
+    background: #1e293b;
+  }
+  .maplibregl-ctrl-group button + button {
+    border-top-color: #334155;
+  }
+  /* Aktywna lokalizacja ma niebieską ikonę, więc jej nie odwracamy. */
+  .maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon,
+  .maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon,
+  .maplibregl-ctrl-compass .maplibregl-ctrl-icon,
+  .maplibregl-ctrl-geolocate:not(.maplibregl-ctrl-geolocate-active, .maplibregl-ctrl-geolocate-background) .maplibregl-ctrl-icon {
+    filter: invert(1);
+  }
+}
