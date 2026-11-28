@@ -1,6 +1,21 @@
 # Raport wykonania zadań
 
-Zestawienie zadań projektu schron-app: zadania z podzadaniami, wykonawcy, terminy, commity, dokumentacja i testy. Daty pochodzą z GitHuba (założenie zadania i merge do `main`). Stan na 22.11.2026.
+Zestawienie zadań projektu schron-app: zadania z podzadaniami, wykonawcy, terminy, commity, dokumentacja i testy. Daty pochodzą z GitHuba (założenie zadania i merge do `main`). Stan na 28.11.2026.
+
+## Zespół
+
+| Login na GitHubie | Imię i nazwisko |
+|---|---|
+| gryczanm | Mateusz Gryczan |
+| Kasia199797 | Katarzyna Milewska |
+| marcelplonarepo | marcelplona |
+| Damian777-programmer | Damian Przedlacki |
+| norbertniemyjski-crypto | Norbert Niemyjski |
+| Fmoczydlowski | Filip Moczydłowski |
+
+Norbert Niemyjski i Filip Moczydłowski nie mieli zadań do 22.11.2026. Pierwsze zadania dostają w sprincie 23–29.11.2026.
+
+## Do 22.11.2026
 
 <table>
 <thead>
@@ -30,7 +45,7 @@ Zestawienie zadań projektu schron-app: zadania z podzadaniami, wykonawcy, termi
 <li><a href="https://github.com/gryczanm/schron-app/issues/9">#9</a> <b>Symbole Dostępności dla daltonistów</b> (prototyp, decyzja: nie)</li>
 </ul>
 </td>
-<td>gryczanm</td>
+<td>gryczanm - Mateusz Gryczan</td>
 <td>
 Zadania i przeglądy na GitHubie, PR-y:
 <a href="https://github.com/gryczanm/schron-app/pull/11">#11</a>,
@@ -78,7 +93,7 @@ Zadania i przeglądy na GitHubie, PR-y:
 <li><a href="https://github.com/gryczanm/schron-app/issues/19">#19</a> <b>Plik z poradami na wypadek alarmu</b></li>
 </ul>
 </td>
-<td>Kasia199797</td>
+<td>Kasia199797 - Katarzyna Milewska</td>
 <td>Zadania na GitHubie</td>
 <td>
 <b>21.11.2026</b> – założenie i wykonanie zadania
@@ -101,7 +116,7 @@ Zadania i przeglądy na GitHubie, PR-y:
 <li><a href="https://github.com/gryczanm/schron-app/issues/23">#23</a> <b>Sekcja „Co robić w razie alarmu”</b></li>
 </ul>
 </td>
-<td>marcelplonarepo</td>
+<td>marcelplonarepo - marcelplona</td>
 <td>Zadania na GitHubie</td>
 <td>
 <b>21.11.2026</b> – założenie i wykonanie zadania
@@ -127,8 +142,8 @@ Zadania i przeglądy na GitHubie, PR-y:
 </ul>
 </td>
 <td>
-gryczanm (projekt, prototyp)<br>
-Damian777-programmer (implementacja)
+gryczanm - Mateusz Gryczan (projekt, prototyp)<br>
+Damian777-programmer - Damian Przedlacki (implementacja)
 </td>
 <td>
 Zadanie na GitHubie, PR
@@ -156,3 +171,137 @@ Zadanie na GitHubie, PR
 </table>
 
 Poza zakresem MVP, otwarte: <a href="https://github.com/gryczanm/schron-app/issues/10">#10</a> Wyszukiwarka miejscowości i gmin offline.
+
+## Sprint 23–29.11.2026
+
+Epik sprintu: <a href="https://github.com/gryczanm/schron-app/issues/35">#35</a>. Każde zadanie zmienia inne pliki, więc można je robić równolegle. W każdym issue jest opis, po co jest zadanie i screen „przed”. Wykonawca dopisuje screen „po” i link do PR-a.
+
+<table>
+<thead>
+<tr>
+<th>Wykonanie zadań</th>
+<th>Wykonawca</th>
+<th>Raportowanie wykonania zadań</th>
+<th>Terminy</th>
+<th>Ładowanie wyników pracy do repozytorium</th>
+<th>Dokumentacja</th>
+<th>Testy</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/31">#31</a> <b>Dodanie tłumaczeń UI aplikacji</b>
+<ul>
+<li><a href="https://github.com/gryczanm/schron-app/issues/32">#32</a> <b>Dodanie języka polskiego</b></li>
+<li><a href="https://github.com/gryczanm/schron-app/issues/33">#33</a> <b>Dodanie języka angielskiego</b></li>
+<li><a href="https://github.com/gryczanm/schron-app/issues/34">#34</a> <b>Dodanie języka niemieckiego</b></li>
+</ul>
+</td>
+<td>Kasia199797 - Katarzyna Milewska</td>
+<td>Zadania na GitHubie</td>
+<td>
+<b>28.11.2026</b> – założenie i wykonanie zadania
+</td>
+<td>
+<a href="https://github.com/gryczanm/schron-app/commit/339eb18">339eb18</a>
+</td>
+<td>brak</td>
+<td>
+<a href="../src/dane/poradnik.test.ts">Testy poradnika w językach PL/EN/DE</a>
+</td>
+</tr>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/27">#27</a> <b>Ekran nie gaśnie podczas Prowadzenia</b>
+</td>
+<td>Damian777-programmer - Damian Przedlacki</td>
+<td>Zadanie na GitHubie (w toku)</td>
+<td>
+<b>28.11.2026</b> – przydział w sprincie<br>
+<b>29.11.2026</b> – termin wykonania
+</td>
+<td>do uzupełnienia</td>
+<td><a href="screeny/sprint-23-29-11/prowadzenie-przed.png">Screen „przed”</a></td>
+<td>do uzupełnienia</td>
+</tr>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/36">#36</a> <b>Przycisk „Udostępnij” w panelu punktu</b>
+</td>
+<td>Kasia199797 - Katarzyna Milewska</td>
+<td>Zadanie na GitHubie (w toku)</td>
+<td>
+<b>28.11.2026</b> – założenie zadania<br>
+<b>29.11.2026</b> – termin wykonania
+</td>
+<td>do uzupełnienia</td>
+<td><a href="screeny/sprint-23-29-11/panel-punktu-przed.png">Screen „przed”</a></td>
+<td>do uzupełnienia</td>
+</tr>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/37">#37</a> <b>Pulsujący wybrany punkt na mapie</b>
+</td>
+<td>norbertniemyjski-crypto - Norbert Niemyjski</td>
+<td>Zadanie na GitHubie (w toku)</td>
+<td>
+<b>28.11.2026</b> – założenie zadania<br>
+<b>29.11.2026</b> – termin wykonania
+</td>
+<td>do uzupełnienia</td>
+<td><a href="screeny/sprint-23-29-11/panel-punktu-przed.png">Screen „przed”</a></td>
+<td>do uzupełnienia</td>
+</tr>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/38">#38</a> <b>Ciemny motyw</b>
+</td>
+<td>Fmoczydlowski - Filip Moczydłowski</td>
+<td>Zadanie na GitHubie (w toku)</td>
+<td>
+<b>28.11.2026</b> – założenie zadania<br>
+<b>29.11.2026</b> – termin wykonania
+</td>
+<td>do uzupełnienia</td>
+<td><a href="screeny/sprint-23-29-11/ciemny-motyw-przed.png">Screen „przed”</a></td>
+<td>do uzupełnienia</td>
+</tr>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/39">#39</a> <b>Animowane statystyki na stronie głównej</b>
+</td>
+<td>marcelplonarepo - marcelplona</td>
+<td>Zadanie na GitHubie (w toku)</td>
+<td>
+<b>28.11.2026</b> – założenie zadania<br>
+<b>29.11.2026</b> – termin wykonania
+</td>
+<td>do uzupełnienia</td>
+<td><a href="screeny/sprint-23-29-11/strona-glowna-przed.png">Screen „przed”</a></td>
+<td>do uzupełnienia</td>
+</tr>
+
+<tr>
+<td>
+<a href="https://github.com/gryczanm/schron-app/issues/40">#40</a> <b>Raport wykonania zadań: sprint 23–29.11.2026</b>
+</td>
+<td>gryczanm - Mateusz Gryczan</td>
+<td>Zadanie na GitHubie, PR z tym raportem</td>
+<td>
+<b>28.11.2026</b> – sekcja sprintu, wykonawcy z imionami, skład zespołu<br>
+<b>29.11.2026</b> – uzupełnienie po zamknięciu zadań sprintu
+</td>
+<td>ten plik</td>
+<td><a href="raport-zadan.md">Raport wykonania zadań</a></td>
+<td>nie dotyczy</td>
+</tr>
+
+</tbody>
+</table>
