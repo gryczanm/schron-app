@@ -2,6 +2,7 @@
 // na dole Dostępność celu i przyciski, na mapie linia od pozycji do celu. Działa bez internetu.
 import { useEffect, useRef, useState } from 'react';
 import { Layer, Source, useMap } from 'react-map-gl/maplibre';
+import { useEkranWlaczony } from './ekran.ts';
 import { KOLOR_DOSTEPNOSCI, szczegolyPunktu, type Punkt } from './dane/zbior.ts';
 import { poprosOKompas, useKompas, usePozycjaUrzadzenia, type StanPozycji } from './pozycja.ts';
 import { formatujOdleglosc, kierunek, okrag, opisOdleglosci, type Kierunek, type LngLat } from './prowadzenie.ts';
@@ -22,6 +23,7 @@ export function useProwadzenie(cel: Punkt | null) {
   const aktywne = wlaczone && cel != null;
   const urzadzenie = usePozycjaUrzadzenia(aktywne);
   const kompas = useKompas(aktywne);
+  useEkranWlaczony(aktywne);
 
   // Bez celu (np. powrót na stronę główną) Prowadzenie się kończy.
   useEffect(() => {
