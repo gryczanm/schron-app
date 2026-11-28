@@ -14,6 +14,7 @@ import { DolProwadzenia, PasekProwadzenia, ProwadzenieNaMapie, useProwadzenie } 
 import { StronaGlowna } from './StronaGlowna.tsx';
 import { WyborJezyka } from './WyborJezyka.tsx';
 import { t } from './teksty.ts';
+import { udostepnijPunkt } from './udostepnianie.ts';
 
 const naMapieWAdresie = () => location.hash === '#mapa';
 
@@ -144,9 +145,28 @@ export function App() {
             <a className="przycisk-drugi" href={szczegoly.trasa} target="_blank" rel="noopener noreferrer">
               {t.przyciski.trasaGoogle}
             </a>
+            <PrzyciskUdostepnij adres={szczegoly.adres} link={szczegoly.trasa} />
           </div>
         </Panel>
       )}
     </div>
+  );
+}
+
+// Udostępnia adres i link Google Maps. Bez Web Share kopiuje do schowka i na chwilę pokazuje „Skopiowano”.
+function PrzyciskUdostepnij({ adres, link }: { adres: string; link: string }) {
+  const [skopiowano, setSkopiowano] = useState(false);
+  useEffect(() => {
+    if (!skopiowano) return;
+    const czas = setTimeout(() => setSkopiowano(false), 2000);
+    return () => clearTimeout(czas);
+  }, [skopiowano]);
+  const udostepnij = async () => {
+    if ((await udostepnijPunkt(adres, link)) === 'skopiowano') setSkopiowano(true);
+  };
+  return (
+    <button className="przycisk-drugi" onClick={udostepnij} aria-live="polite">
+      {skopiowano ? t.przyciski.skopiowano : t.przyciski.udostepnij}
+    </button>
   );
 }
