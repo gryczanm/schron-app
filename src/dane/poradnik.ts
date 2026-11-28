@@ -3,6 +3,9 @@
 export type Link = { nazwa: string; adres: string };
 export type Poradnik = { porady: string[]; linki: Link[] };
 
+// Polski poradnik to poradnik.json, tłumaczenia mają kod języka w nazwie, np. poradnik.en.json.
+export const plikPoradnika = (jezyk: string) => (jezyk === 'pl' ? 'poradnik.json' : `poradnik.${jezyk}.json`);
+
 const jestTekstem = (x: unknown): x is string => typeof x === 'string' && x.trim() !== '';
 
 // Plik jest edytowany ręcznie, więc zły format kończy się czytelnym błędem. Linki tylko https.

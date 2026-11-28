@@ -1,6 +1,7 @@
 // Podkład mapy z OpenFreeMap. Offline działa w miarę możliwości (cache runtime service workera),
 // a jego brak nie może zablokować warstw punktów schronienia.
 import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
+import { jezyk } from './teksty.ts';
 
 const STYL = 'https://tiles.openfreemap.org/styles/liberty';
 const GLIFY = 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf';
@@ -15,14 +16,14 @@ const STYL_ZAPASOWY: StyleSpecification = {
 };
 
 // Liberty podpisuje państwa, regiony i miejscowości po angielsku (name_en). Etykiety z nazwą
-// dostają polską, a bez niej nazwę domyślną. Numery dróg (ref) zostają.
-// Warstwy rozpoznajemy po name_en, a nie po id, więc po polsku są też rzeki, ulice i POI.
-const NAZWA_PO_POLSKU: ExpressionSpecification = ['coalesce', ['get', 'name:pl'], ['get', 'name']];
+// dostają ją w języku aplikacji, a bez niej nazwę domyślną. Numery dróg (ref) zostają.
+// Warstwy rozpoznajemy po name_en, a nie po id, więc w tym języku są też rzeki, ulice i POI.
+const NAZWA_W_JEZYKU: ExpressionSpecification = ['coalesce', ['get', `name:${jezyk}`], ['get', 'name']];
 
-function poPolsku(styl: StyleSpecification): StyleSpecification {
+function wJezykuAplikacji(styl: StyleSpecification): StyleSpecification {
   const layers = styl.layers.map((w) =>
     w.type === 'symbol' && JSON.stringify(w.layout?.['text-field'] ?? '').includes('"name_en"')
-      ? { ...w, layout: { ...w.layout, 'text-field': NAZWA_PO_POLSKU } }
+      ? { ...w, layout: { ...w.layout, 'text-field': NAZWA_W_JEZYKU } }
       : w,
   );
   return { ...styl, layers };
@@ -34,7 +35,7 @@ export async function wczytajStyl(pobierz: typeof fetch = fetch, limitMs = 4000)
   const pobierzStyl = async () => {
     const odp = await pobierz(STYL);
     if (!odp.ok) return STYL_ZAPASOWY;
-    return poPolsku((await odp.json()) as StyleSpecification);
+    return wJezykuAplikacji((await odp.json()) as StyleSpecification);
   };
   const poLimicie = new Promise<StyleSpecification>((ok) => setTimeout(() => ok(STYL_ZAPASOWY), limitMs));
   return Promise.race([pobierzStyl(), poLimicie]).catch(() => STYL_ZAPASOWY);

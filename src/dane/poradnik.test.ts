@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { odczytajPoradnik } from './poradnik.ts';
+import { JEZYKI } from '../teksty.ts';
+import { odczytajPoradnik, plikPoradnika } from './poradnik.ts';
 
 const link = { nazwa: 'Poradnik bezpieczeństwa', adres: 'https://www.gov.pl/web/poradnikbezpieczenstwa' };
 
@@ -26,8 +27,18 @@ describe('poradnik „Co robić w razie alarmu”', () => {
     expect(() => odczytajPoradnik({ porady: ['A'], linki: [{ adres: link.adres }] })).toThrow('Link nr 1');
   });
 
-  it('plik public/dane/poradnik.json ma poprawny format', () => {
-    const plik = readFileSync(new URL('../../public/dane/poradnik.json', import.meta.url), 'utf8');
+  it.each(JEZYKI)('poradnik w języku %s ma poprawny format', (jezyk) => {
+    const plik = readFileSync(new URL(`../../public/dane/${plikPoradnika(jezyk)}`, import.meta.url), 'utf8');
     expect(() => odczytajPoradnik(JSON.parse(plik))).not.toThrow();
+  });
+
+  it('tłumaczenia mają tyle samo porad i linków co polski poradnik', () => {
+    const wczytaj = (j: string) =>
+      odczytajPoradnik(JSON.parse(readFileSync(new URL(`../../public/dane/${plikPoradnika(j)}`, import.meta.url), 'utf8')));
+    const pl = wczytaj('pl');
+    for (const j of JEZYKI) {
+      expect(wczytaj(j).porady).toHaveLength(pl.porady.length);
+      expect(wczytaj(j).linki.map((l) => l.adres)).toEqual(pl.linki.map((l) => l.adres));
+    }
   });
 });

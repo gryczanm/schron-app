@@ -12,6 +12,7 @@ import { Mapa } from './Mapa.tsx';
 import { Panel } from './Panel.tsx';
 import { DolProwadzenia, PasekProwadzenia, ProwadzenieNaMapie, useProwadzenie } from './Prowadzenie.tsx';
 import { StronaGlowna } from './StronaGlowna.tsx';
+import { WyborJezyka } from './WyborJezyka.tsx';
 import { t } from './teksty.ts';
 
 const naMapieWAdresie = () => location.hash === '#mapa';
@@ -123,6 +124,7 @@ export function App() {
           <a className="link-strona-glowna" href="#">
             {t.przyciski.stronaGlowna}
           </a>
+          <WyborJezyka />
         </Panel>
       )}
       {wybrany && szczegoly && !prowadzi && (

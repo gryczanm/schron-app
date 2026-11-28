@@ -2,8 +2,9 @@
 // Mapa jest pod adresem #mapa, więc przycisk „Wstecz” w telefonie wraca tutaj.
 import { useEffect, useMemo, useState } from 'react';
 import { DOSTEPNOSCI, KOLOR_DOSTEPNOSCI, policzDostepnosci, type Zbior } from './dane/zbior.ts';
-import { odczytajPoradnik, type Poradnik } from './dane/poradnik.ts';
-import { t } from './teksty.ts';
+import { odczytajPoradnik, plikPoradnika, type Poradnik } from './dane/poradnik.ts';
+import { jezyk, t } from './teksty.ts';
+import { WyborJezyka } from './WyborJezyka.tsx';
 
 export function StronaGlowna({ zbior }: { zbior: Zbior | null }) {
   const poradnik = usePoradnik();
@@ -12,6 +13,7 @@ export function StronaGlowna({ zbior }: { zbior: Zbior | null }) {
   return (
     <main className="strona-glowna">
       <div className="sg-srodek">
+        <WyborJezyka />
         <img className="sg-grafika" src={`${import.meta.env.BASE_URL}strona-glowna.svg`} alt="" />
         <h1 className="sg-tytul">{t.tytul}</h1>
         <p className="sg-wstep">{t.stronaGlowna.wstep}</p>
@@ -24,14 +26,14 @@ export function StronaGlowna({ zbior }: { zbior: Zbior | null }) {
           {zbior && liczniki ? (
             <>
               <p className="sg-razem">
-                {t.stronaGlowna.wszystkie}: <strong>{zbior.punkty.length.toLocaleString('pl')}</strong>
+                {t.stronaGlowna.wszystkie}: <strong>{zbior.punkty.length.toLocaleString(t.kod)}</strong>
               </p>
               <ul className="sg-liczniki">
                 {DOSTEPNOSCI.map((d) => (
                   <li key={d}>
                     <span className="kropka" style={{ background: KOLOR_DOSTEPNOSCI[d] }} />
                     {t.dostepnosc[d]}
-                    <strong>{liczniki[d].toLocaleString('pl')}</strong>
+                    <strong>{liczniki[d].toLocaleString(t.kod)}</strong>
                   </li>
                 ))}
               </ul>
@@ -81,7 +83,7 @@ function usePoradnik() {
   const [poradnik, setPoradnik] = useState<Poradnik | null>(null);
   useEffect(() => {
     let aktualny = true;
-    fetch(`${import.meta.env.BASE_URL}dane/poradnik.json`)
+    fetch(`${import.meta.env.BASE_URL}dane/${plikPoradnika(jezyk)}`)
       .then((odp) => odp.json())
       .then((dane) => aktualny && setPoradnik(odczytajPoradnik(dane)))
       .catch((blad) => console.warn('Poradnik pominięty:', blad));

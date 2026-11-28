@@ -18,7 +18,7 @@ export function Legenda({ wlaczone, przelacz, wWidoku }: Wlasciwosci) {
           <button key={d} className="legenda-pozycja" aria-pressed={wlaczona} onClick={() => przelacz(d)}>
             <span className="legenda-liczba">
               <span className="kropka" style={{ background: wlaczona ? kolor : 'transparent', border: `2px solid ${kolor}` }} />
-              {wWidoku ? wWidoku[d].toLocaleString('pl') : '–'}
+              {wWidoku ? wWidoku[d].toLocaleString(t.kod) : '–'}
             </span>
             <span className="legenda-nazwa">{t.dostepnosc[d]}</span>
           </button>

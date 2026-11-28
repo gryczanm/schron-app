@@ -1,0 +1,17 @@
+{
+  "porady": [
+    "Suchen Sie schon jetzt auf der Karte den nächsten Schutzpunkt und planen Sie den Weg dorthin.",
+    "Der Alarm ist ein auf- und abschwellender Sirenenton von 3 Minuten, die Entwarnung ein Dauerton von 3 Minuten.",
+    "Wenn Sie den Alarm hören, schalten Sie Radio oder Fernsehen ein und folgen Sie den Durchsagen.",
+    "Gehen Sie im Gebäude in einen Raum ohne Fenster, sodass Sie mindestens zwei massive Wände von außen trennen. Nehmen Sie die Treppe, nicht den Aufzug.",
+    "Gehen Sie draußen zum nächsten Schutzpunkt, wenn Sie ihn sicher erreichen können (Punkte „Auf Anfrage“ können geschlossen sein). Sonst suchen Sie Schutz in einer Tiefgarage, einem Tunnel oder einem Gebäude mit massiven Wänden.",
+    "Wenn Sie im offenen Gelände eine Explosion hören, legen Sie sich auf den Boden, am besten in eine Mulde, und schützen Sie Ihren Kopf.",
+    "Verlassen Sie Ihren Schutzort nicht vorschnell. Schreiben Sie SMS statt anzurufen, damit das Netz nicht überlastet wird."
+  ],
+  "linki": [
+    { "nazwa": "Sicherheitsratgeber (gov.pl, PL)", "adres": "https://www.gov.pl/web/poradnikbezpieczenstwa" },
+    { "nazwa": "Verhaltenshinweise (MSWiA, PL)", "adres": "https://www.gov.pl/web/olioc/instrukcja-reagowania" },
+    { "nazwa": "Regionales Warnsystem – RSO (PL)", "adres": "https://www.gov.pl/web/kgpsp/regionalny-system-ostrzegania" },
+    { "nazwa": "Gdzie się ukryć – Karte der PSP (PL)", "adres": "https://gdziesieukryc.pl" }
+  ]
+}

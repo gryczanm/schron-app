@@ -388,3 +388,32 @@ body,
   margin-top: 12px;
   font-weight: 700;
 }
+
+/* Przełącznik języka PL/EN/DE. */
+.wybor-jezyka {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.link-strona-glowna + .wybor-jezyka {
+  justify-content: flex-start;
+  margin: 12px 0 0;
+}
+.wybor-jezyka button {
+  min-width: 44px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 99px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.wybor-jezyka button[aria-pressed='true'] {
+  border-color: #0d9488;
+  background: #0d9488;
+  color: #fff;
+}

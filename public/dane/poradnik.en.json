@@ -1,0 +1,17 @@
+{
+  "porady": [
+    "Check the nearest shelter point on the map now and plan your way there.",
+    "The alarm is a modulated (rising and falling) siren tone for 3 minutes; the all-clear is a steady tone for 3 minutes.",
+    "When you hear the alarm, turn on the radio or TV and follow the announcements.",
+    "Inside a building, go to a room without windows, so that at least two solid walls separate you from the outside. Use the stairs, not the lift.",
+    "Outdoors, go to the nearest shelter point if you can get there safely (points marked “On request” may be closed). If not, take cover in an underground car park, a tunnel or a building with solid walls.",
+    "If you hear an explosion in open ground, lie down, ideally in a hollow, and cover your head.",
+    "Do not leave your place of shelter too early. Send text messages instead of calling, so the network is not overloaded."
+  ],
+  "linki": [
+    { "nazwa": "Safety guide (gov.pl, PL)", "adres": "https://www.gov.pl/web/poradnikbezpieczenstwa" },
+    { "nazwa": "Response instructions (MSWiA, PL)", "adres": "https://www.gov.pl/web/olioc/instrukcja-reagowania" },
+    { "nazwa": "Regional Warning System – RSO (PL)", "adres": "https://www.gov.pl/web/kgpsp/regionalny-system-ostrzegania" },
+    { "nazwa": "Gdzie się ukryć – PSP map (PL)", "adres": "https://gdziesieukryc.pl" }
+  ]
+}
